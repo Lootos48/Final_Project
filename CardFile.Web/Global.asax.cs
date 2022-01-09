@@ -1,4 +1,9 @@
-﻿using System;
+﻿using CardFile.BLL.Infrastructure;
+using CardFile.Web.Util;
+using Ninject;
+using Ninject.Modules;
+using Ninject.Web.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -16,6 +21,12 @@ namespace CardFile.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            NinjectModule serviceModule = new ServiceModule();
+            NinjectModule uowModule = new UoWModule("CardFileDBConnection");
+            var kernel = new StandardKernel(serviceModule, uowModule);
+            kernel.Unbind<ModelValidatorProvider>();
+            DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));
         }
     }
 }

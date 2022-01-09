@@ -1,0 +1,30 @@
+﻿@using System.Web.Mvc.Html
+
+@helper PrintCards(IEnumerable<CardFile.Web.Models.CardViewModel> cards)
+{
+    <div class="container-fluid row gy-4">
+        @foreach (var card in cards)
+        {
+            <div class="col-3">
+                <div class="card shadow">
+                    <div class="card-header bg-dark">
+                        <h5 class="card-title text-white">
+                            @card.Title
+                        </h5>
+                    </div>
+                    <div class="card-body ">
+                        <p class="">
+                            @card.Text.Substring(0, 250)...
+                        </p>
+                    </div>
+                    <div class="card-footer bg-dark justify-content-between row-cols-2">
+                        <a href="/Cards/Details/@card.Id" class="btn btn-outline-light">
+                            Details
+                        </a>
+                        <span class="text-muted text-white ">🤍 @card.LikeAmount</span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

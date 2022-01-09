@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using CardFile.Web.Filter;
+using System.Web;
 using System.Web.Mvc;
 
 namespace CardFile.Web
@@ -8,6 +9,7 @@ namespace CardFile.Web
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            filters.Add(new ArgumentExceptionHandleFilterAttribute());
         }
     }
 }
