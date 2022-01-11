@@ -21,12 +21,25 @@
                     <li class="nav-item px-5 border-end">
                         <a class="nav-link" href="/Author/Details">Profile</a>
                     </li>
-                    <li class="nav-item px-5 border-end">
-                        <a class="nav-link" href="/Author/Create">Login</a>
-                    </li>
-                    <li class="nav-item px-5 ">
-                        <a class="nav-link" href="#">Logout</a>
-                    </li>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item px-5 border-end">
+                            <a class="nav-link" href="/Author/Login">Login</a>
+                        </li>
+                    }
+                    else
+                    {
+                        if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item px-5 border-end">
+                                <a class="nav-link" href="/Admin/Index">Administration</a>
+                            </li>
+                        }
+
+                        <li class="nav-item px-5 ">
+                            <a class="nav-link" href="/Author/Logout">Logout</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </nav>

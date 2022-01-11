@@ -12,19 +12,22 @@
                             @card.Title
                         </h5>
                     </div>
-                    <div class="card-body ">
+                    <div class="card-body card-height">
                         <p class="">
                             @card.Text.Substring(0, 250)...
                         </p>
                     </div>
-                    <div class="card-footer bg-dark justify-content-between row-cols-2">
-                        <a href="/Cards/Details/@card.Id" class="btn btn-outline-light">
+                    <div class="card-footer bg-dark d-flex justify-content-start align-items-center">
+                        <a href="/Cards/Details/@card.Id" align="center" class="btn btn-outline-light px-5">
                             Details
                         </a>
-                        <span class="text-muted text-white ">🤍 @card.LikeAmount</span>
+                        <div class="ml-3">
+                            <a href="/Cards/Like" class="text-white text-decoration-none"><span class="likes">♥</span> @card.LikeAmount</a>
+                        </div>
                     </div>
                 </div>
             </div>
         }
     </div>
 }
+

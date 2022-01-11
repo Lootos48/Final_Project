@@ -15,15 +15,14 @@ namespace CardFile.Web.Helpers
         {
             StringBuilder result = new StringBuilder();
 
-
             for (int i = pageInfo.PageNumber - 1; i <= pageInfo.PageNumber + 1; i++)
             {
-                if (pageInfo.PageNumber - 1 < 0)
+                if (pageInfo.PageNumber < 1)
                 {
                     i = 1;
                     pageInfo.PageNumber = 1;
                 }
-                if (pageInfo.PageNumber > pageInfo.TotalPages)
+                else if (pageInfo.PageNumber > pageInfo.TotalPages)
                 {
                     i = pageInfo.TotalPages - 1;
                     pageInfo.PageNumber = pageInfo.TotalPages;
@@ -44,6 +43,10 @@ namespace CardFile.Web.Helpers
                 }
                 tag.AddCssClass("btn btn-light");
                 result.Append(tag.ToString());
+                if (pageInfo.TotalPages == 1)
+                {
+                    break;
+                }
                 if (pageInfo.PageNumber + 1 > pageInfo.TotalPages)
                 {
                     tag = new TagBuilder("a");
@@ -55,7 +58,6 @@ namespace CardFile.Web.Helpers
                     result.Append(tag.ToString());
                     break;
                 }
-
             }
             return MvcHtmlString.Create(result.ToString());
         }

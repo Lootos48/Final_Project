@@ -5,47 +5,36 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Details</h2>
+<div class="container mx-lg-5 mx-5">
+    <div class="dl-horizontal pl-3 border border-1 rounded-3 col-5">
 
-<div>
-    <h4>CardViewModel</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
+        <div class="justify-content-center">
+            <span class="fs-3 col-3">Author:</span>
+            <span class="fs-4 fw-lighter col-3 px-0">@Html.DisplayFor(model => model.Author.FirstName) @Html.DisplayFor(model => model.Author.SecondName)</span>
+        </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
+        <div class="justify-content-center">
+            <span class="fs-3 col-3">@Html.DisplayNameFor(model => model.DateOfCreate):</span>
+            <span class="fs-4 fw-lighter col-3 px-0">@Html.DisplayFor(model => model.DateOfCreateString)</span>
+        </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.DateOfCreate)
-        </dt>
+        <div class="justify-content-center">
+            <span class="fs-3 col-3">@Html.DisplayNameFor(model => model.LikeAmount):</span>
+            <span class="fs-4 fw-lighter col-3 px-0">@Html.DisplayFor(model => model.LikeAmount)</span>
+        </div>
+    </div>
 
-        <dd>
-            @Html.DisplayFor(model => model.DateOfCreate)
-        </dd>
+    <div>
+        <h2 class="mt-3">@Model.Title</h2>
+        <p class="fs-4">@Model.Text</p>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Text)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Text)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.LikeAmount)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.LikeAmount)
-        </dd>
-
-    </dl>
+    <div class="form-group row mt-5">
+        <div class="col-1 me-3">
+            <a href="/Cards/Index" class="btn btn-lg btn-outline-dark">Back to Cards</a>
+        </div>
+        <div class="col-1 ml-5">
+            <a href="/Cards/Edit/@Model.Id" class="btn btn-lg btn-outline-dark px-4">Edit Profile</a>
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

@@ -14,6 +14,7 @@ namespace CardFile.Web.Util
         {
             Bind<IAuthorsService>().To<AuthorService>();
             Bind<ICardsService>().To<CardsService>();
+            Bind<IIdentityService>().To<IdentityService>();
         }
     }
 }

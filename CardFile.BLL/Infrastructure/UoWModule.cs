@@ -21,6 +21,7 @@ namespace CardFile.BLL.Infrastructure
         public override void Load()
         {
             Bind<IUnitOfWork>().To<EFUnitOfWork>().WithConstructorArgument(connectionString);
+            Bind<IIdentityProvider>().To<IdentityProvider>();
         }
     }
 }

@@ -1,0 +1,101 @@
+﻿@model CardFile.Web.Models.UserAuthInfoViewModel
+
+@{
+    ViewBag.Title = "Registration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="m-auto border border-2 rounded-3 mt-3" style="background-color: white; width: 30%;">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <h2 class="ml-3 mt-2">Join up to our Card File</h2>
+        <div class="form-cotrol">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group ">
+                @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-11">
+                    @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-11">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            @if (ViewBag.UserExist == null)
+            {
+                <span class="text-danger ml-3">@ViewBag.UserExist</span>
+            }
+            <div class="form-group d-flex align-content-center mt-1">
+                <div class="ml-3">
+                    <input type="submit" value="Register" class="btn btn-outline-success px-4" />
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+
+
+
+
+
+@*@model CardFile.Web.Models.AuthorViewModel
+
+    @{
+        ViewBag.Title = "Create";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <div class="mx-lg-5 border-1">
+        <h2 class="ml-2 mb-3">Join up to our Card File!</h2>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "control-label col-md-2 fs-4" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.SecondName, htmlAttributes: new { @class = "control-label col-md-2 fs-4" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.SecondName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SecondName, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group row mt-5">
+                    <div class="col-1 ml-3">
+                        <a href="/Cards/Index" class="btn btn-outline-danger">Back to Cards</a>
+                    </div>
+                    <div class="col-3 ml-5 ">
+                        <input type="submit" value="Create" class="btn btn-outline-success px-4" />
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }*@

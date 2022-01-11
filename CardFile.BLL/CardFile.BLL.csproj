@@ -59,13 +59,16 @@
   <ItemGroup>
     <Compile Include="DTO\AuthorDTO.cs" />
     <Compile Include="DTO\CardDTO.cs" />
+    <Compile Include="DTO\UserAuthInfoDTO.cs" />
     <Compile Include="Infrastructure\UoWModule.cs" />
     <Compile Include="Infrastructure\ValidationException.cs" />
     <Compile Include="Interfaces\IAuthorsService.cs" />
     <Compile Include="Interfaces\ICardsService.cs" />
+    <Compile Include="Interfaces\IIdentityService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AuthorService.cs" />
     <Compile Include="Services\CardsService.cs" />
+    <Compile Include="Services\IdentityService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -50,7 +50,17 @@ namespace CardFile.Web.Controllers
             PageInfoModel pageInfo = new PageInfoModel { PageNumber = page, PageSize = pageSize, TotalItems = cards.Count };
             IndexViewModel<CardViewModel> ivm = new IndexViewModel<CardViewModel> { PageInfo = pageInfo, PageObjects = cardsPerPage };
 
-            return View(ivm);
+            ViewData["IVM"] = ivm;
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Filter(PageCardsFiltrationViewModel filter)
+        {
+
+
+            return RedirectToAction("Index");
         }
 
         // GET: Cards/Details/5
@@ -62,6 +72,7 @@ namespace CardFile.Web.Controllers
         }
 
         // GET: Cards/Create
+        [Authorize(Roles = "Admin, RegisteredUser")]
         public ActionResult Create()
         {
             return View();
@@ -69,6 +80,7 @@ namespace CardFile.Web.Controllers
 
         // POST: Cards/Create
         [HttpPost]
+        [Authorize(Roles = "Admin, RegisteredUser")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CardViewModel card)
         {
@@ -93,6 +105,7 @@ namespace CardFile.Web.Controllers
         }
 
         // GET: Cards/Edit/5
+        [Authorize(Roles = "Admin, RegisteredUser")]
         public async Task<ActionResult> Edit(int id)
         {
             CardDTO cardDTO = await _cardsService.GetCard(id);
@@ -102,6 +115,7 @@ namespace CardFile.Web.Controllers
 
         // POST: Cards/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Admin, RegisteredUser")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(CardViewModel card)
         {
@@ -125,6 +139,7 @@ namespace CardFile.Web.Controllers
         }
 
         // GET: Cards/Delete/5
+        [Authorize(Roles = "Admin, RegisteredUser")]
         public async Task<ActionResult> Delete(int id)
         {
             return View(await _cardsService.GetCard(id));
@@ -132,6 +147,7 @@ namespace CardFile.Web.Controllers
 
         // POST: Cards/Delete/5
         [HttpPost]
+        [Authorize(Roles = "Admin, RegisteredUser")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id, CardViewModel card)
         {

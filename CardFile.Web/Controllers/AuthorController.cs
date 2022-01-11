@@ -2,8 +2,12 @@
 using CardFile.BLL.DTO;
 using CardFile.BLL.Interfaces;
 using CardFile.Web.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.Owin.Security;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -14,11 +18,13 @@ namespace CardFile.Web.Controllers
     public class AuthorController : Controller
     {
         readonly IAuthorsService _authorService;
+        readonly IIdentityService identityService;
         readonly IMapper mapper;
 
-        public AuthorController(IAuthorsService serv)
+        public AuthorController(IAuthorsService serv, IIdentityService identityServ)
         {
             _authorService = serv;
+            identityService = identityServ;
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -30,6 +36,9 @@ namespace CardFile.Web.Controllers
 
                 cfg.CreateMap<CardDTO, CardViewModel>();
                 cfg.CreateMap<CardViewModel, CardDTO>();
+
+                cfg.CreateMap<UserAuthInfoDTO, UserAuthInfoViewModel>();
+                cfg.CreateMap<UserAuthInfoViewModel, UserAuthInfoDTO>();
             });
 
             mapper = config.CreateMapper();
@@ -51,53 +60,86 @@ namespace CardFile.Web.Controllers
         }
 
         // GET: Author/Details/5
+        [Authorize(Roles = "Admin, RegisteredUser")]
         public async Task<ActionResult> Details(int id)
         {
-            AuthorDTO authorDTO = await _authorService.GetAuthor(id);
-
-            return View(mapper.Map<AuthorViewModel>(authorDTO));
-        }
-
-        // GET: Author/Create
-        [HttpGet]
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpGet]
-        public async Task<ActionResult> Create(int id)
-        {
-
-            return View();
-        }
-
-        // POST: Author/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(AuthorViewModel author)
-        {
-            try
+            if (User.Identity.IsAuthenticated)
             {
-                if (ModelState.IsValid)
-                {
-                    AuthorDTO authorDTO = await _authorService.CreateAuthor(mapper.Map<AuthorDTO>(author));
-                    author.Id = authorDTO.Id;
-                }
-                else
-                {
-                    return View();
-                }
+                AuthorDTO authorDTO = await _authorService.GetAuthor(id);
 
-                return RedirectToAction("Details", new { id = author.Id });
+                return View(mapper.Map<AuthorViewModel>(authorDTO));
             }
-            catch
+            return View("Index");
+        }
+
+        public async Task<ActionResult> Login()
+        {
+            if (!User.Identity.IsAuthenticated)
             {
                 return View();
             }
+
+            return RedirectToAction("Index", "Cards");
         }
 
-        // GET: Cards/Edit/5
+        [HttpPost]
+        public async Task<ActionResult> Login([Bind(Include = "Username,Password")] UserAuthInfoViewModel user)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var claimsIdentity = await identityService.GetUserClaims(mapper.Map<UserAuthInfoDTO>(user));
+                    var authenticationManager = HttpContext.GetOwinContext().Authentication;
+                    authenticationManager.SignIn(new AuthenticationProperties() { }, claimsIdentity);
+                }
+                catch (ValidationException ex)
+                {
+                    ViewBag.UserExist = ex.Message;
+                    return View("Login");
+                }
+                return RedirectToAction("Index", "Cards");
+            }
+            return View("Login");
+        }
+
+        public async Task<ActionResult> Registration()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return View();
+            }
+
+            return RedirectToAction("Index", "Cards");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Registration([Bind(Include = "Username,Password")] UserAuthInfoViewModel user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Login");
+            }
+            var result = await identityService.CreateUser(mapper.Map<UserAuthInfoDTO>(user));
+            if (!result)
+            {
+                return RedirectToAction("Login");
+            }
+            return await Login(user);
+        }
+
+        public async Task<ActionResult> Logout()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var authenticationManager = HttpContext.GetOwinContext().Authentication;
+                authenticationManager.SignOut();
+            }
+
+            return RedirectToAction("Index", "Cards");
+        }
+
+        [Authorize(Roles = "Admin, RegisteredUser")]
         public async Task<ActionResult> Edit(int id)
         {
             AuthorDTO authorDTO = await _authorService.GetAuthor(id);
@@ -107,6 +149,7 @@ namespace CardFile.Web.Controllers
 
         // POST: Author/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Admin, RegisteredUser")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(AuthorViewModel author)
         {
@@ -129,7 +172,7 @@ namespace CardFile.Web.Controllers
             }
         }
 
-        // GET: Author/Delete/5
+        [Authorize(Roles = "Admin, RegisteredUser")]
         public async Task<ActionResult> Delete(int id)
         {
             return View(await _authorService.GetAuthor(id));
@@ -137,6 +180,7 @@ namespace CardFile.Web.Controllers
 
         // POST: Author/Delete/5
         [HttpPost]
+        [Authorize(Roles = "Admin, RegisteredUser")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id, AuthorViewModel author)
         {
