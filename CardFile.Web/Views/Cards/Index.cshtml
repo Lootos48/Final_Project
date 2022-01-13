@@ -17,7 +17,7 @@
 
                 @Html.TextBox("SearchString", "", new { @class = "ml-2 col-4 form-control", @placeholder = "Write your search word" })
 
-                <input type="submit" value="Search" class="ml-3 col-2 btn btn-outline-dark"/>
+                <input type="submit" value="Search" class="ml-3 col-2 btn btn-outline-dark" />
 
                 @if (User.IsInRole("Admin") || User.IsInRole("RegisteredUser"))
                 {
@@ -27,12 +27,12 @@
                 {
                     <a href="/Author/Login" class="ml-3 col-2 btn btn-secondary">Create new Card</a>
                 }
-            </div>
-        }
 
-        @using (Html.BeginForm("Index", "Cards", FormMethod.Get, new { @class = "d-flex justify-content-end col-4" }))
-        {
-            @Html.DropDownList("sortOrder", new SelectList(Enum.GetValues(typeof(SortOptions))), "Sort by", new { @class = "form-select  col-5 ml-4", onchange = @"form.submit();" })
+                <div class="d-flex justify-content-end col-5 ml-5">
+                    @Html.DropDownList("sortOrder", new SelectList(Enum.GetValues(typeof(SortOptions))), "Sort by", new { @class = "form-select  col-5 ml-4", onchange = @"form.submit();" })
+                </div>
+            
+            </div>
         }
     </div>
     

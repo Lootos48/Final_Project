@@ -42,7 +42,7 @@ namespace CardFile.Web.Controllers
         }
 
         // GET: Cards
-        public async Task<ActionResult> Index(int page = 1, SortOptions sortOrder = SortOptions.None, PageFiltration searchFilter = null)
+        public async Task<ActionResult> Index(int page = 1, PageFiltration searchFilter = null, SortOptions sortOrder = SortOptions.None)
         {
             IEnumerable<CardDTO> dTOs = await _cardsService.GetAll();
 
