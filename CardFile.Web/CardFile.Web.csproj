@@ -172,6 +172,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AuthorController.cs" />
     <Compile Include="Controllers\CardsController.cs" />
+    <Compile Include="Enums\CardViewOptions.cs" />
     <Compile Include="Filter\ArgumentExceptionHandleFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -179,10 +180,11 @@
     <Compile Include="Helpers\PagingHelpers.cs" />
     <Compile Include="Models\AuthorViewModel.cs" />
     <Compile Include="Models\CardViewModel.cs" />
-    <Compile Include="Models\PageCardsFiltrationViewModel.cs" />
+    <Compile Include="Models\PageFiltration.cs" />
     <Compile Include="Models\PageInfoModel.cs" />
     <Compile Include="Models\UserAuthInfoViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util\CardMainPageTransformer.cs" />
     <Compile Include="Util\ServiceModule.cs" />
     <Compile Include="Util\Startup.cs" />
   </ItemGroup>

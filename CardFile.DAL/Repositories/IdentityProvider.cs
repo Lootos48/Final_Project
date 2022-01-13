@@ -5,7 +5,6 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -66,7 +65,7 @@ namespace CardFile.DAL.Repositories
             var identityUser = await _userManager.FindAsync(user.Username, user.Password);
             if (identityUser == null)
             {
-                throw new ValidationException("User with that login info isn`t exist");
+                return null;
             }
             var userIdentity = _userManager.CreateIdentity(identityUser, DefaultAuthenticationTypes.ApplicationCookie);
             return userIdentity;

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CardFile.BLL.DTO;
+using CardFile.BLL.Infrastructure;
 using CardFile.BLL.Interfaces;
 using CardFile.Web.Models;
 using Microsoft.AspNet.Identity;
@@ -7,7 +8,6 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -105,12 +105,12 @@ namespace CardFile.Web.Controllers
 
         public async Task<ActionResult> Registration()
         {
-            if (!User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
-                return View();
+                return RedirectToAction("Index", "Cards");
             }
 
-            return RedirectToAction("Index", "Cards");
+            return View();
         }
 
         [HttpPost]
@@ -118,13 +118,18 @@ namespace CardFile.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Login");
+                return View();
             }
-            var result = await identityService.CreateUser(mapper.Map<UserAuthInfoDTO>(user));
-            if (!result)
+            try
             {
-                return RedirectToAction("Login");
+                var isCreated = await identityService.CreateUser(mapper.Map<UserAuthInfoDTO>(user));
             }
+            catch (ValidationException ex)
+            {
+                ViewBag.UserExist = ex.Message;
+                return View("Registration");
+            }
+
             return await Login(user);
         }
 

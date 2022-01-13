@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace CardFile.BLL.Interfaces
 {
+    /// <summary>
+    /// Интерфейс для реализации вызова CRUD-операций репозитория
+    /// </summary>
     public interface ICardsService : IDisposable
     {
         Task<CardDTO> CreateCard(CardDTO cardDto);

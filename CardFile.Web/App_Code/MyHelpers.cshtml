@@ -1,5 +1,6 @@
 ﻿@using System.Web.Mvc.Html
 
+<!--Inline-helper для структурированного и оформленного вывода карточек-->
 @helper PrintCards(IEnumerable<CardFile.Web.Models.CardViewModel> cards)
 {
     <div class="container-fluid row gy-4">
@@ -14,16 +15,25 @@
                     </div>
                     <div class="card-body card-height">
                         <p class="">
-                            @card.Text.Substring(0, 250)...
+                            @card.Text
                         </p>
                     </div>
                     <div class="card-footer bg-dark d-flex justify-content-start align-items-center">
                         <a href="/Cards/Details/@card.Id" align="center" class="btn btn-outline-light px-5">
                             Details
                         </a>
-                        <div class="ml-3">
-                            <a href="/Cards/Like" class="text-white text-decoration-none"><span class="likes">♥</span> @card.LikeAmount</a>
-                        </div>
+                        @if (User.IsInRole("Admin") || User.IsInRole("RegisteredUser"))
+                        {
+                            <div class="ml-3 d-flex align-items-center">
+                                <a href="/Cards/Like/@card.Id" class="text-white text-decoration-none fs-5"><span class="likes">♥</span> @card.LikeAmount</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="ml-3 d-flex align-items-center">
+                                <a href="/Author/Login" class="text-white text-decoration-none fs-5"><span class="likes">♥</span> @card.LikeAmount</a>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>

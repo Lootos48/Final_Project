@@ -11,11 +11,25 @@ using System.Threading.Tasks;
 
 namespace CardFile.BLL.Services
 {
+    /// <summary>
+    /// Класс для реализации вызова методов CRUD-операций репозитория Author
+    /// </summary>
     public class AuthorService : IAuthorsService
     {
+        /// <summary>
+        /// Объект класса UnitOfWork через который происходит работа с репозиториями
+        /// </summary>
         IUnitOfWork Database { get; set; }
+
+        /// <summary>
+        /// Поле класса авто-маппера, в который переданы конфигурация карт проекций используемый, в этом классе - классов сущностей
+        /// </summary>
         readonly IMapper mapper;
 
+        /// <summary>
+        /// Конструктор в котором инициализируется поле взаимодействия с БД, а также задается конфигурация проекций авто-маппера
+        /// </summary>
+        /// <param name="uow">Класс который хранит в себе репозитории для взаимодействия с контекстом БД</param>
         public AuthorService(IUnitOfWork uow)
         {
             Database = uow;
@@ -37,6 +51,8 @@ namespace CardFile.BLL.Services
 
             mapper = config.CreateMapper();
         }
+
+        #region [ CRUD-operations ]
 
         public async Task<AuthorDTO> CreateAuthor(AuthorDTO authorDto)
         {
@@ -64,10 +80,11 @@ namespace CardFile.BLL.Services
         }
 
         public async Task<bool> DeleteAuthor(int id)
-        {
-            /*Author author = mapper.Map<Author>(authorDTO);*/
+        { 
             return await Database.Authors.RemoveAsync(id);
         }
+
+        #endregion
 
         public void Dispose()
         {

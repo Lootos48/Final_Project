@@ -10,10 +10,18 @@ using System.Threading.Tasks;
 
 namespace CardFile.DAL.Repositories
 {
+    /// <inheritdoc cref="IRepository{TEntity}"/>
     public class AuthorRepository : IRepository<Author>
     {
+        /// <summary>
+        /// Поле для работы с классом контекста БД
+        /// </summary>
         readonly CardFileContext _context;
 
+        /// <summary>
+        /// Конструктор класса который обеспечивает работу репозитория с контекстом БД
+        /// </summary>
+        /// <param name="context">Объект класса контекста БД</param>
         public AuthorRepository(CardFileContext context)
         {
             _context = context;

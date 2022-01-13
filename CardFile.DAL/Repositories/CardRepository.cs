@@ -10,10 +10,18 @@ using System.Threading.Tasks;
 
 namespace CardFile.DAL.Repositories
 {
+    /// <inheritdoc cref="IRepository{TEntity}"/>
     public class CardRepository : IRepository<Card>
     {
+        /// <summary>
+        /// Поле для работы с классом контекста БД
+        /// </summary>
         readonly CardFileContext _context;
 
+        /// <summary>
+        /// Конструктор класса который обеспечивает работу репозитория с контекстом БД
+        /// </summary>
+        /// <param name="context">Объект класса контекста БД</param>
         public CardRepository(CardFileContext context)
         {
             _context = context;
@@ -57,16 +65,14 @@ namespace CardFile.DAL.Repositories
 
         public async Task<bool> UpdateAsync(Card item)
         {
-            _context.Entry(item).State = EntityState.Modified;
-
-            int rowsAffected = await _context.SaveChangesAsync();
-
-            if (rowsAffected == 0)
+            var entity = _context.Cards.Find(item.Id);
+            if (entity != null)
             {
-                return false;
+                _context.Entry(entity).CurrentValues.SetValues(item);
+                await _context.SaveChangesAsync();
+                return true;
             }
-
-            return true;
+            return false;
         }
     }
 }

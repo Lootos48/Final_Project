@@ -28,11 +28,11 @@
                 </div>
             </div>
 
-            @if (ViewBag.UserExist == null)
+            @if (ViewBag.UserExist != null)
             {
                 <span class="text-danger ml-3">@ViewBag.UserExist</span>
             }
-            <div class="form-group d-flex align-content-center mt-1">
+            <div class="form-group d-flex align-content-center mt-2">
                 <div class="ml-3">
                     <input type="submit" value="Register" class="btn btn-outline-success px-4" />
                 </div>

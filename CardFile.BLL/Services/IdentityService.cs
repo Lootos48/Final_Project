@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CardFile.BLL.DTO;
+using CardFile.BLL.Infrastructure;
 using CardFile.BLL.Interfaces;
 using CardFile.DAL.Entities;
 using CardFile.DAL.Interfaces;
@@ -33,6 +34,10 @@ namespace CardFile.BLL.Services
             {
                 result = await GiveRoleToUser("RegisteredUser", user.Username);
             }
+            else
+            {
+                throw new ValidationException("User with that username is already exist", "Username");
+            }
             return result;
         }
         public async Task<bool> CreateRole(string role)
@@ -51,7 +56,12 @@ namespace CardFile.BLL.Services
 
         public async Task<ClaimsIdentity> GetUserClaims(UserAuthInfoDTO user)
         {
-            return await identityProvider.GetUserClaim(mapper.Map<UserAuthInfo>(user));
+            ClaimsIdentity claims = await identityProvider.GetUserClaim(mapper.Map<UserAuthInfo>(user));
+            if (claims == null)
+            {
+                throw new ValidationException("User with that login info isn`t exist", "Username");
+            }
+            return claims;
         }
 
     }

@@ -7,8 +7,12 @@ using System.Threading.Tasks;
 
 namespace CardFile.BLL.Interfaces
 {
+    /// <summary>
+    /// Интерфейс для реализации вызова CRUD-операций репозитория
+    /// </summary>
     public interface IAuthorsService : IDisposable
     {
+        
         Task<AuthorDTO> CreateAuthor(AuthorDTO authorDto);
         Task<AuthorDTO> GetAuthor(int? id);
         Task<IEnumerable<AuthorDTO>> GetAll();

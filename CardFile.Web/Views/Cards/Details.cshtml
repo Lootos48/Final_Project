@@ -29,12 +29,27 @@
         <p class="fs-4">@Model.Text</p>
     </div>
 
-    <div class="form-group row mt-5">
-        <div class="col-1 me-3">
+    <div class="form-group d-flex align-content-center mt-5">
+        <div class="col-1 me-3 pt-3">
             <a href="/Cards/Index" class="btn btn-lg btn-outline-dark">Back to Cards</a>
         </div>
-        <div class="col-1 ml-5">
-            <a href="/Cards/Edit/@Model.Id" class="btn btn-lg btn-outline-dark px-4">Edit Profile</a>
-        </div>
+        @if (User.IsInRole("Admin") || User.IsInRole("RegisteredUser"))
+        {
+            <div class="col-1 ml-5 pt-3">
+                <a href="/Cards/Edit/@Model.Id" class="btn btn-lg btn-outline-dark px-4">Edit Card</a>
+            </div>
+            <div class="col-1 ml-5">
+                <a href="/Cards/Like/@Model.Id" class="text-decoration-none detailsLike">♥</a>
+            </div>
+        }
+        else
+        {
+            <div class="col-1 ml-5 pt-3">
+                <a href="/Author/Login" class="btn btn-lg btn-secondary px-4">Edit Card</a>
+            </div>
+            <div class="col-1 ml-5">
+                <a href="/Author/Login" class="text-decoration-none detailsLike">♥</a>
+            </div>
+        }
     </div>
 </div>

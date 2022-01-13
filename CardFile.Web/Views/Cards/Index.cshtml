@@ -1,45 +1,49 @@
 ﻿@using CardFile.Web.Helpers
 @using CardFile.Web.Models
-@*@model CardFile.Web.Models.IndexViewModel<CardFile.Web.Models.CardViewModel>*@
-@model PageCardsFiltrationViewModel
+@using CardFile.Web.Enums 
+@model IndexViewModel<CardViewModel>
 
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div>
-    @using (Html.BeginForm("Filter", "Cards", FormMethod.Post, new { @class = "form-control pt-3", style = "height: 70px;" }))
-    {
-        <div class="ml-4 d-flex flex-row m-auto">
-            @Html.DropDownList("SearchBy", new SelectList(new string[] { "Title", "Date", "In-text phrase" }), "Search by", new { @class = "form-select col-2 ml-4" })
+<div class="container-fluid">
+    <div class="d-flex align-items-baseline">
+        @using (Html.BeginForm("Index", "Cards", FormMethod.Get, new { @class = "form-control pt-3 col-7", style = "height: 70px;" }))
+        {
+            <div class="d-flex">
+                @Html.DropDownList("SearchBy", new SelectList(Enum.GetValues(typeof(FilterOptions))), "Search by", new { @class = "form-select col-3 ml-4" })
 
-            @Html.TextBox("SearchString", "", new { @class = "ml-2 col-2 form-control", @placeholder = "Write your search word" })
+                @Html.TextBox("SearchString", "", new { @class = "ml-2 col-4 form-control", @placeholder = "Write your search word" })
 
-            @Html.DropDownList("SortType", new SelectList(new string[] { "Date", "Title", "Like" }), "Sort by", new { @class = "form-select col-2 ml-5" })
+                <input type="submit" value="Search" class="ml-3 col-2 btn btn-outline-dark"/>
 
-            @Html.DropDownList("SortOrder", new SelectList(new string[] { "Ascending", "Descending" }), "Sort order", new { @class = "form-select col-2 ml-2" })
+                @if (User.IsInRole("Admin") || User.IsInRole("RegisteredUser"))
+                {
+                    <a href="/Cards/Create" class="ml-3 col-2 btn btn-outline-success">Create new Card</a>
+                }
+                else
+                {
+                    <a href="/Author/Login" class="ml-3 col-2 btn btn-secondary">Create new Card</a>
+                }
+            </div>
+        }
 
-            <input type="submit" value="Search" class="ml-3 btn btn-outline-dark" />
+        @using (Html.BeginForm("Index", "Cards", FormMethod.Get, new { @class = "d-flex justify-content-end col-4" }))
+        {
+            @Html.DropDownList("sortOrder", new SelectList(Enum.GetValues(typeof(SortOptions))), "Sort by", new { @class = "form-select  col-5 ml-4", onchange = @"form.submit();" })
+        }
+    </div>
+    
 
-            @if (User.Identity.IsAuthenticated)
-            {
-                <a href="/Cards/Create" class="ml-3 btn btn-outline-success">Create new Card</a>
-            }
-        </div>
-    }
-
-    @{
-        IndexViewModel<CardViewModel> cards = ViewData["IVM"] as IndexViewModel<CardViewModel>;
-    }
     <div class="mt-5">
-        @*@MyHelpers.PrintCards(Model.PageObjects)*@
-        @MyHelpers.PrintCards(cards.PageObjects)
+        @MyHelpers.PrintCards(Model.PageObjects)
     </div>
 
     <div class="d-flex justify-content-center mt-5">
         <div class="btn-group  m-auto">
-            @Html.PageLinks(cards.PageInfo, x => Url.Action("Index", new { page = x }))
+            @Html.PageLinks(Model.PageInfo, x => Url.Action("Index", new { page = x }))
         </div>
     </div>
 </div>

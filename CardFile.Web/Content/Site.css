@@ -32,11 +32,24 @@ select {
 .likes {
     color: white ;
     font-size: 35px;
+    transition: 0.2s;
 }
 
-.likes:hover {
+.detailsLike {
+    color: darkgray;
+    font-size: 50px;
+    transition: 0.2s;
+}
+
+.likes:hover, .detailsLike:hover {
+    color: red;
+    transition: 0.2s;
+}
+
+.detailsLike:visited, .likes:visited {
     color: red;
 }
+
 
 .card-height {
     height: 220px;
