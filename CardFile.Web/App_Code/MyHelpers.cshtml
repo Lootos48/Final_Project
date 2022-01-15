@@ -22,16 +22,16 @@
                         <a href="/Cards/Details/@card.Id" align="center" class="btn btn-outline-light px-5">
                             Details
                         </a>
-                        @if (User.IsInRole("Admin") || User.IsInRole("RegisteredUser"))
+                        @if (!User.IsInRole("Admin") && User.Identity.Name != card.Author.Username && User.Identity.IsAuthenticated)
                         {
-                            <div class="ml-3 d-flex align-items-center">
+                            <div class="ml-3 d-flex align-items-center card-footer-style">
                                 <a href="/Cards/Like/@card.Id" class="text-white text-decoration-none fs-5"><span class="likes">♥</span> @card.LikeAmount</a>
                             </div>
                         }
                         else
                         {
-                            <div class="ml-3 d-flex align-items-center">
-                                <a href="/Author/Login" class="text-white text-decoration-none fs-5"><span class="likes">♥</span> @card.LikeAmount</a>
+                            <div class="ml-3 d-flex align-items-center card-footer-style">
+                                <p class="text-white text-decoration-none fs-5"><span class="likes">♥</span> @card.LikeAmount</p>
                             </div>
                         }
                     </div>

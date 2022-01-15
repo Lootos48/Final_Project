@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,11 +35,27 @@ namespace CardFile.DAL.EF
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
             // создаём связь 1-к-многим у таблиц Author и Cards 
-            modelBuilder.Entity<Author>()
+            /*modelBuilder.Entity<Author>()
                 .HasMany(c => c.Cards)
-                .WithRequired(a => a.Author);
+                .WithRequired(a => a.Author);*/
+            modelBuilder.Entity<Author>()
+                .HasMany(c => c.Cards);
+        }
+
+        /// <summary>
+        /// Метод для вызова процедуры добавления значения ID Author в колонку AuthorId строки таблицы Card
+        /// </summary>
+        /// <param name="cardId">ID карточки с которую добавляем значение ID автора</param>
+        /// <param name="authorId">ID автора что создал карточку</param>
+        /// <returns></returns>
+        public virtual Task<int> AddAuthorToCard(int cardId, int authorId)
+        {
+            return this.Database.ExecuteSqlCommandAsync("exec AddAuthorToCard @cardId, @authorId",
+                new SqlParameter("@cardId", cardId),
+                new SqlParameter("@authorId", authorId));
         }
     }
+
 
     /// <summary>
     /// Класс для обеспечения работы Code-first миграций, который позволяет миграциям создавать объект класса контекста БД

@@ -16,6 +16,12 @@ namespace CardFile.DAL.Entities
         public int Id { get; set; }
 
         /// <summary>
+        /// Поле для Никнейма Автора
+        /// </summary>
+        [Display(Name = "Username")]
+        public string Username { get; set; }
+
+        /// <summary>
         /// Поле для Имени Автора.
         /// </summary>
         /// <remarks>Поле обязательно и имеет ограничение в минимум 3 символа и максимум 60</remarks>

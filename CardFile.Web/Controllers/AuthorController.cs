@@ -91,7 +91,7 @@ namespace CardFile.Web.Controllers
                 {
                     var claimsIdentity = await identityService.GetUserClaims(mapper.Map<UserAuthInfoDTO>(user));
                     var authenticationManager = HttpContext.GetOwinContext().Authentication;
-                    authenticationManager.SignIn(new AuthenticationProperties() { }, claimsIdentity);
+                    authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = true }, claimsIdentity);
                 }
                 catch (ValidationException ex)
                 {

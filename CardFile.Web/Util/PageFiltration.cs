@@ -8,7 +8,7 @@ using System.Web;
 
 namespace CardFile.Web.Util
 {
-    public static class CardMainPageTransformer
+    public static class PageFiltration
     {
         public static IEnumerable<CardDTO> Transform(IEnumerable<CardDTO> cards)
         {
@@ -33,8 +33,6 @@ namespace CardFile.Web.Util
         {
             switch (sortOrder)
             {
-                case SortOptions.None:
-                    break;
                 case SortOptions.Title:
                     cards = cards.OrderBy(c => c.Title);
                     break;
@@ -56,14 +54,12 @@ namespace CardFile.Web.Util
             return Transform(cards);
         }
 
-        public static IEnumerable<CardDTO> Transform(IEnumerable<CardDTO> cards, SortOptions sortOrder, PageFiltration searchFilter)
+        public static IEnumerable<CardDTO> Transform(IEnumerable<CardDTO> cards, SortOptions sortOrder, PageFilter searchFilter)
         {
             if (searchFilter != null)
             {
                 switch (searchFilter.SearchBy)
                 {
-                    case FilterOptions.None:
-                        break;
                     case FilterOptions.Title:
                         cards = cards.Where(c => c.Title.Contains(searchFilter.SearchString));
                         break;

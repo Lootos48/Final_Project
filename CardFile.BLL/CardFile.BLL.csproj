@@ -69,6 +69,7 @@
     <Compile Include="Services\AuthorService.cs" />
     <Compile Include="Services\CardsService.cs" />
     <Compile Include="Services\IdentityService.cs" />
+    <Compile Include="Services\ProcedureService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

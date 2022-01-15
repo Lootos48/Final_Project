@@ -2,7 +2,7 @@
 
 namespace CardFile.Web.Models
 {
-    public class PageFiltration
+    public class PageFilter
     {
         public FilterOptions SearchBy { get; set; }
         

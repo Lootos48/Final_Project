@@ -13,6 +13,7 @@ namespace CardFile.Web.Models
         public string Username { get; set; }
 
         [Required]
+        [DataType(DataType.Password)]
         [StringLength(100, ErrorMessage = "User name size must be between 5 and 100 characters")]
         public string Password { get; set; }
     }

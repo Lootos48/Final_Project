@@ -5,9 +5,9 @@ using Owin;
 using System;
 using System.Threading.Tasks;
 
-[assembly: OwinStartup(typeof(CardFile.Web.Util.Startup))]
+[assembly: OwinStartup(typeof(CardFile.Web.App_Start.Startup))]
 
-namespace CardFile.Web.Util
+namespace CardFile.Web.App_Start
 {
     public class Startup
     {

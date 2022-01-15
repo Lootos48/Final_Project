@@ -15,6 +15,7 @@ namespace CardFile.BLL.Interfaces
         
         Task<AuthorDTO> CreateAuthor(AuthorDTO authorDto);
         Task<AuthorDTO> GetAuthor(int? id);
+        Task<AuthorDTO> GetAuthor(Func<AuthorDTO, bool> predicate);
         Task<IEnumerable<AuthorDTO>> GetAll();
         Task<bool> UpdateAuthor(AuthorDTO authorDTO);
         Task<bool> DeleteAuthor(int authorDTO);

@@ -13,7 +13,7 @@
         @using (Html.BeginForm("Index", "Cards", FormMethod.Get, new { @class = "form-control pt-3 col-7", style = "height: 70px;" }))
         {
             <div class="d-flex">
-                @Html.DropDownList("SearchBy", new SelectList(Enum.GetValues(typeof(FilterOptions))), "Search by", new { @class = "form-select col-3 ml-4" })
+                @Html.DropDownList("SearchBy", new SelectList(Enum.GetValues(typeof(FilterOptions))), "Search by",  new { @class = "form-select col-3 ml-4" })
 
                 @Html.TextBox("SearchString", "", new { @class = "ml-2 col-4 form-control", @placeholder = "Write your search word" })
 

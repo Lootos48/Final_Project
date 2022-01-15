@@ -7,7 +7,6 @@ namespace CardFile.Web.Enums
 {
     public enum SortOptions
     {
-        None = 0,
         Title = 1,
         Older = 2,
         Newer = 3,
@@ -17,7 +16,6 @@ namespace CardFile.Web.Enums
 
     public enum FilterOptions
     {
-        None = 0,
         Title = 1,
         Text = 2
     }

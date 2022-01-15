@@ -36,7 +36,7 @@ namespace CardFile.DAL.Entities
         /// </summary>
         /// <remarks>Поле обязательно и имеет ограничение в минимум 251 символ и максимум 2000</remarks>
         [Required]
-        [StringLength(2000, MinimumLength = 251, ErrorMessage = "Text minimum size is 50 characters")]
+        [StringLength(2000, MinimumLength = 251, ErrorMessage = "Text minimum size is 251 characters")]
         public string Text { get; set; }
 
         /// <summary>

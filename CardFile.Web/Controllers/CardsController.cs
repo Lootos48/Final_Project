@@ -11,17 +11,20 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using CardFile.Web.Util;
+using CardFile.BLL.Services;
 
 namespace CardFile.Web.Controllers
 {
     public class CardsController : Controller
     {
         readonly ICardsService _cardsService;
+        readonly IAuthorsService _authorsService;
         readonly IMapper mapper;
 
-        public CardsController(ICardsService serv)
+        public CardsController(ICardsService serv, IAuthorsService authorsServ)
         {
             _cardsService = serv;
+            _authorsService = authorsServ;
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -42,11 +45,11 @@ namespace CardFile.Web.Controllers
         }
 
         // GET: Cards
-        public async Task<ActionResult> Index(int page = 1, PageFiltration searchFilter = null, SortOptions sortOrder = SortOptions.None)
+        public async Task<ActionResult> Index(int page = 1, PageFilter searchFilter = null, SortOptions sortOrder = SortOptions.Newer)
         {
             IEnumerable<CardDTO> dTOs = await _cardsService.GetAll();
 
-            dTOs = CardMainPageTransformer.Transform(dTOs, sortOrder, searchFilter);
+            dTOs = PageFiltration.Transform(dTOs, sortOrder, searchFilter);
 
             var cards = mapper.Map<List<CardViewModel>>(dTOs);
 
@@ -85,6 +88,7 @@ namespace CardFile.Web.Controllers
             return View();
         }
 
+
         // POST: Cards/Create
         [HttpPost]
         [Authorize(Roles = "Admin, RegisteredUser")]
@@ -95,20 +99,29 @@ namespace CardFile.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
+
+                    var authenticationManager = HttpContext.GetOwinContext().Authentication;
+                    var username = authenticationManager.User.Identity.Name;
+                    var author = await _authorsService.GetAuthor(a => a.Username == username);
+                    card.Author = mapper.Map<AuthorViewModel>(author);
                     card.DateOfCreate = DateTime.Now;
-                    await _cardsService.CreateCard(mapper.Map<CardDTO>(card));
+                    var createdCard = await _cardsService.CreateCard(mapper.Map<CardDTO>(card));
+                    await ProcedureService.AddAuthorToCard(card.Id, author.Id);
+                    card.Id = createdCard.Id;
                 }
                 else
                 {
                     return View();
                 }
-
-                return RedirectToAction("Details", new { id = card.Id });
             }
-            catch
+            catch (Exception ex)
             {
+                return Content(ex.Message);
                 return View();
             }
+
+
+            return RedirectToAction("Details", new { id = card.Id });
         }
 
         // GET: Cards/Edit/5

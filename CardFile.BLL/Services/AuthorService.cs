@@ -68,6 +68,13 @@ namespace CardFile.BLL.Services
             return mapper.Map<AuthorDTO>(author);
         }
 
+        public async Task<AuthorDTO> GetAuthor(Func<AuthorDTO, bool> predicate)
+        {
+            var authors = await Database.Authors.GetAllAsync();
+            var authorsDTO = mapper.Map<IEnumerable<AuthorDTO>>(authors);
+            return authorsDTO.FirstOrDefault(predicate);
+        }
+
         public async Task<IEnumerable<AuthorDTO>> GetAll()
         {
             return mapper.Map<IEnumerable<AuthorDTO>>(await Database.Authors.GetAllAsync());

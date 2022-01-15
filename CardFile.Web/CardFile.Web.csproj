@@ -180,13 +180,13 @@
     <Compile Include="Helpers\PagingHelpers.cs" />
     <Compile Include="Models\AuthorViewModel.cs" />
     <Compile Include="Models\CardViewModel.cs" />
-    <Compile Include="Models\PageFiltration.cs" />
+    <Compile Include="Models\PageFilter.cs" />
     <Compile Include="Models\PageInfoModel.cs" />
     <Compile Include="Models\UserAuthInfoViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\CardMainPageTransformer.cs" />
+    <Compile Include="Util\PageFiltration.cs" />
     <Compile Include="Util\ServiceModule.cs" />
-    <Compile Include="Util\Startup.cs" />
+    <Compile Include="App_Start\Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-grid.css" />

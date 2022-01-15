@@ -29,10 +29,15 @@ select {
     width: 75%;
 }
 
+.card-footer-style {
+    height: 45px;
+}
+
 .likes {
     color: white ;
     font-size: 35px;
     transition: 0.2s;
+    cursor: pointer
 }
 
 .detailsLike {

@@ -10,11 +10,15 @@ namespace CardFile.Web.Models
     {
         public int Id { get; set; }
 
+        [Display(Name = "Username")]
+        public string Username { get; set; }
+
         [Display(Name = "First name")]
         public string FirstName { get; set; }
 
         [Display(Name = "Second name")]
         public string SecondName { get; set; }
+
 
         public virtual ICollection<CardViewModel> Cards { get; set; }
 
