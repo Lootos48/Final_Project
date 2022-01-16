@@ -4,6 +4,7 @@ using CardFile.BLL.Infrastructure;
 using CardFile.BLL.Interfaces;
 using CardFile.DAL.Entities;
 using CardFile.DAL.Interfaces;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
@@ -43,16 +44,17 @@ namespace CardFile.BLL.Services
 
         public async Task<bool> CreateUser(UserAuthInfoDTO user)
         {
-            bool result = await identityProvider.CreateUser(mapper.Map<UserAuthInfo>(user));
-            if (result)
+            IdentityResult isCreated = await identityProvider.CreateUser(mapper.Map<UserAuthInfo>(user));
+            if (isCreated.Succeeded)
             {
-                result = await GiveRoleToUser("RegisteredUser", user.Username);
+                bool isRegistered = await GiveRoleToUser("RegisteredUser", user.Username);
+                return isRegistered;
             }
             else
             {
-                throw new ValidationException("User with that username is already exist", "Username");
+                throw new ValidationException(string.Join(", ", isCreated.Errors), "");
             }
-            return result;
+            return isCreated.Succeeded;
         }
         public async Task<bool> CreateRole(string role)
         {

@@ -71,11 +71,7 @@ namespace CardFile.Web.Controllers
 
 
             int pageSize = 8;
-            IEnumerable<CardViewModel> cardsPerPage = cards.Skip((page - 1) * pageSize).Take(pageSize);
-            PageInfoModel pageInfo = new PageInfoModel { PageNumber = page, PageSize = pageSize, TotalItems = cards.Count };
-            IndexViewModel<CardViewModel> ivm = new IndexViewModel<CardViewModel> { PageInfo = pageInfo, PageObjects = cardsPerPage };
-
-            return View(ivm);
+            return View(Pagination<CardViewModel>.PaginateObjects(cards, page, pageSize));
         }
 
         public async Task<ActionResult> Like(int id)
@@ -105,6 +101,9 @@ namespace CardFile.Web.Controllers
         }
 
 
+
+
+
         // POST: Cards/Create
         [HttpPost]
         [Authorize(Roles = "Admin, RegisteredUser")]
@@ -115,9 +114,6 @@ namespace CardFile.Web.Controllers
             {
                 if (ModelState.IsValid)
                 {
-
-                    /*var authenticationManager = HttpContext.GetOwinContext().Authentication;
-                    var username = authenticationManager.User.Identity.Name;*/
                     var author = await _authorsService.GetAuthor(a => a.Username == CurrentUserUsername);
                     card.AuthorId = author.Id;
                     card.DateOfCreate = DateTime.Now;
@@ -176,7 +172,7 @@ namespace CardFile.Web.Controllers
         }
 
         [Authorize(Roles = "Admin, RegisteredUser")]
-        public async Task<ActionResult> Delete(int id, CardViewModel card)
+        public async Task<ActionResult> Delete(int id)
         {
             if (!await IsOwnerOfCard(id) && !User.IsInRole("Admin"))
             {
@@ -198,9 +194,6 @@ namespace CardFile.Web.Controllers
         [NonAction]
         private async Task<bool> IsOwnerOfCard(int id)
         {
-            /*var authenticationManager = HttpContext.GetOwinContext().Authentication;
-            var username = authenticationManager.User.Identity.Name;*/
-            /*return username == card.Author.Username;*/
             var card = await _cardsService.GetCard(id);
             return CurrentUserUsername == card.Author.Username;
         }

@@ -1,4 +1,5 @@
 ﻿@using System.Web.Mvc.Html
+@using CardFile.Web.Helpers
 
 <!--Inline-helper для структурированного и оформленного вывода карточек-->
 @helper PrintCards(IEnumerable<CardFile.Web.Models.CardViewModel> cards)
@@ -9,7 +10,7 @@
             <div class="col-3">
                 <div class="card shadow">
                     <div class="card-header bg-dark">
-                        <h5 class="card-title text-white">
+                        <h5 class="card-title fixed-card-title-height text-white">
                             @card.Title
                         </h5>
                     </div>
@@ -25,13 +26,15 @@
                         @if (!User.IsInRole("Admin") && User.Identity.Name != card.Author.Username && User.Identity.IsAuthenticated)
                         {
                             <div class="ml-3 d-flex align-items-center card-footer-style">
-                                <a href="/Cards/Like/@card.Id" class="text-white text-decoration-none fs-5"><span class="likes">♥</span> @card.LikeAmount</a>
+                                <div class="text-white  fs-5">
+                                    <a href="/Cards/Like/@card.Id" class="text-decoration-none likes">♥</a> @card.LikeAmount
+                                </div>
                             </div>
                         }
                         else
                         {
                             <div class="ml-3 d-flex align-items-center card-footer-style">
-                                <p class="text-white text-decoration-none fs-5"><span class="likes">♥</span> @card.LikeAmount</p>
+                                <p class="text-white text-decoration-none user-select-none fs-5"><span class="likes">♥</span> @card.LikeAmount</p>
                             </div>
                         }
                     </div>
@@ -40,4 +43,47 @@
         }
     </div>
 }
+
+@helper PrintDetailsCards(IEnumerable<CardFile.Web.Models.CardViewModel> cards)
+{
+    <div class="container-fluid row gy-4">
+        @foreach (var card in cards)
+        {
+            <div class="col-3">
+                <div class="card shadow">
+                    <div class="card-header bg-dark">
+                        <h5 class="card-title fixed-card-title-height text-white">
+                            @card.Title
+                        </h5>
+                    </div>
+                    <div class="card-body card-height">
+                        <p class="">
+                            @card.Text.Substring(0, 250)
+                        </p>
+                    </div>
+                    <div class="card-footer bg-dark d-flex justify-content-start align-items-center">
+                        <a href="/Cards/Details/@card.Id" align="center" class="btn btn-outline-light px-5">
+                            Details
+                        </a>
+                        @if (!User.IsInRole("Admin") && User.Identity.Name != card.Author.Username && User.Identity.IsAuthenticated)
+                        {
+                            <div class="ml-3 d-flex align-items-center card-footer-style">
+                                <div class="text-white  fs-5">
+                                    <a href="/Cards/Like/@card.Id" class="text-decoration-none likes">♥</a> @card.LikeAmount
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="ml-3 d-flex align-items-center card-footer-style">
+                                <p class="text-white text-decoration-none user-select-none fs-5"><span class="likes">♥</span> @card.LikeAmount</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
 

@@ -37,12 +37,12 @@ namespace CardFile.DAL.Repositories
 
         public async Task<Author> FindByIdAsync(int id)
         {
-            return await _context.Authors.FindAsync(id);
+            return await _context.Authors.Include(x => x.Cards).SingleOrDefaultAsync(y => y.Id == id);
         }
 
         public async Task<IEnumerable<Author>> GetAllAsync()
         {
-            return await _context.Authors.ToListAsync();
+            return await _context.Authors.Include(a => a.Cards).ToListAsync();
         }
 
         public async Task<IEnumerable<Author>> GetAsync(Func<Author, bool> predicate)
@@ -52,7 +52,7 @@ namespace CardFile.DAL.Repositories
 
         public async Task<bool> RemoveAsync(int id)
         {
-            var item = _context.Authors.Attach(new Author { Id = id });
+            var item = _context.Authors.Find(id);
             var result = item != null;
             if (result)
             {
@@ -65,15 +65,13 @@ namespace CardFile.DAL.Repositories
 
         public async Task<bool> UpdateAsync(Author item)
         {
-            _context.Entry(item).State = EntityState.Modified;
-
-            int rowsAffected = await _context.SaveChangesAsync();
-
-            if (rowsAffected == 0)
+            var entity = _context.Authors.Include(c => c.Cards).Single(a => a.Id == item.Id);
+            if (entity != null)
             {
-                return false;
+                _context.Entry(entity).CurrentValues.SetValues(item);
+                await _context.SaveChangesAsync();
+                return true;
             }
-
             return true;
         }
     }

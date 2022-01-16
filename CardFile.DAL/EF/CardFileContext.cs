@@ -29,6 +29,8 @@ namespace CardFile.DAL.EF
         /// </summary>
         public DbSet<Card> Cards { get; set; }
 
+        public DbSet<AuthorsLikedCards> AuthorsLikedCards { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             // убираем добавление множественных окончаний у назвиний генерируемых таблиц
@@ -40,6 +42,9 @@ namespace CardFile.DAL.EF
                 .WithRequired(a => a.Author)
                 .HasForeignKey(k => k.AuthorId)
                 .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<AuthorsLikedCards>()
+                .HasKey(x => new { x.AuthorId, x.CardId });
         }
 
         /// <summary>

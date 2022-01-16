@@ -18,13 +18,6 @@ namespace CardFile.Web.Util
                 {
                     card.Text = card.Text.Substring(0, 250) + "...";
                 }
-                /*if (card.Author == null)
-                {
-                    card.Author = new AuthorDTO
-                    {
-                        FirstName = "Annonymuos"
-                    };
-                }*/
             }
             return cards;
         }

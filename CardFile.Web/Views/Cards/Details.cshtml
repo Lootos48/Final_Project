@@ -33,7 +33,19 @@
         <div class="col-1 me-3 pt-3">
             <a href="/Cards/Index" class="btn btn-lg btn-outline-dark">Back to Cards</a>
         </div>
-        @if (User.IsInRole("Admin") || User.Identity.Name == Model.Author.Username)
+        @if (User.Identity.Name == Model.Author.Username)
+        {
+            <div class="col-1 ml-5">
+                <a href="/Cards/Like/@Model.Id" class="text-decoration-none detailsLike liked pe-none">♥</a>
+            </div>
+        }
+        else
+        {
+            <div class="col-1 ml-5">
+                <a href="/Cards/Like/@Model.Id" class="text-decoration-none detailsLike">♥</a>
+            </div>
+        }
+        @*@if (User.IsInRole("Admin") || User.Identity.Name == Model.Author.Username)
         {
             <div class="col-1 ml-5 pt-3">
                 <a href="/Cards/Edit/@Model.Id" class="btn btn-lg btn-outline-dark px-4">Edit Card</a>
@@ -48,6 +60,6 @@
             <div class="col-1 ml-5">
                 <a href="/Cards/Like/@Model.Id" class="text-decoration-none detailsLike">♥</a>
             </div>
-        }
+        }*@
     </div>
 </div>

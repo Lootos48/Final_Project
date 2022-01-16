@@ -28,6 +28,7 @@ namespace CardFile.DAL.Repositories
             _userManager.PasswordValidator = new PasswordValidator
             {
                 RequiredLength = 3,
+                RequireUppercase = true
             };
         }
 
@@ -42,12 +43,12 @@ namespace CardFile.DAL.Repositories
             return _roleManager.Roles.Where(x => x.Users.Any(y => y.UserId == user.Id));
         }
 
-        public async Task<bool> CreateUser(UserAuthInfo user)
+        public async Task<IdentityResult> CreateUser(UserAuthInfo user)
         {
             var identityUser = new IdentityUser(user.Username);
             var result = await _userManager.CreateAsync(identityUser, user.Password);
 
-            return result.Succeeded;
+            return result;
         }
 
         public async Task<bool> CreateRole(string role)

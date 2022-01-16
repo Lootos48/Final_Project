@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="EF\CardFileContext.cs" />
     <Compile Include="Entities\Author.cs" />
+    <Compile Include="Entities\AuthorsLikedCards.cs" />
     <Compile Include="Entities\Card.cs" />
     <Compile Include="Entities\UserAuthInfo.cs" />
     <Compile Include="Interfaces\IIdentityProvider.cs" />
@@ -85,6 +86,10 @@
     <Compile Include="Migrations\202201151708334_ReCreateOf1toManyRelationOfAuthorAndCards.cs" />
     <Compile Include="Migrations\202201151708334_ReCreateOf1toManyRelationOfAuthorAndCards.designer.cs">
       <DependentUpon>202201151708334_ReCreateOf1toManyRelationOfAuthorAndCards.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202201162034382_AddedAuthorsCardsNtoNRelation.cs" />
+    <Compile Include="Migrations\202201162034382_AddedAuthorsCardsNtoNRelation.designer.cs">
+      <DependentUpon>202201162034382_AddedAuthorsCardsNtoNRelation.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -112,6 +117,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202201151708334_ReCreateOf1toManyRelationOfAuthorAndCards.resx">
       <DependentUpon>202201151708334_ReCreateOf1toManyRelationOfAuthorAndCards.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201162034382_AddedAuthorsCardsNtoNRelation.resx">
+      <DependentUpon>202201162034382_AddedAuthorsCardsNtoNRelation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

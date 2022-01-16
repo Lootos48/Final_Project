@@ -51,10 +51,14 @@ select {
     transition: 0.2s;
 }
 
-.detailsLike:visited, .likes:visited {
+.liked {
     color: red;
 }
 
+.fixed-card-title-height {
+    height: 25px;
+    overflow: hidden;
+}
 
 .card-height {
     height: 220px;

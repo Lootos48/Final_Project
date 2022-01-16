@@ -53,8 +53,8 @@ namespace CardFile.Web.Controllers
                 cfg.CreateMap<CardDTO, CardViewModel>();
                 cfg.CreateMap<CardViewModel, CardDTO>();
 
-                cfg.CreateMap<UserAuthInfoDTO, UserAuthInfoViewModel>();
-                cfg.CreateMap<UserAuthInfoViewModel, UserAuthInfoDTO>();
+                cfg.CreateMap<UserAuthInfoDTO, LoginViewModel>();
+                cfg.CreateMap<LoginViewModel, UserAuthInfoDTO>();
             });
 
             mapper = config.CreateMapper();
@@ -113,7 +113,7 @@ namespace CardFile.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Login([Bind(Include = "Username,Password")] UserAuthInfoViewModel user)
+        public async Task<ActionResult> Login(LoginViewModel user)
         {
             if (ModelState.IsValid)
             {
@@ -144,7 +144,7 @@ namespace CardFile.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Registration([Bind(Include = "Username,Password")] UserAuthInfoViewModel user)
+        public async Task<ActionResult> Registration(RegistrationViewModel registerInfo)
         {
             if (!ModelState.IsValid)
             {
@@ -152,7 +152,23 @@ namespace CardFile.Web.Controllers
             }
             try
             {
-                var isCreated = await _identityService.CreateUser(mapper.Map<UserAuthInfoDTO>(user));
+                /*bool isCreated = await _identityService.CreateUser(mapper.Map<UserAuthInfoDTO>(user));*/
+                bool isCreated = await _identityService.CreateUser(new UserAuthInfoDTO()
+                {
+                    Username = registerInfo.Username,
+                    Password = registerInfo.Password
+                });
+
+                if (isCreated)
+                {
+                    AuthorViewModel author = new AuthorViewModel()
+                    {
+                        Username = registerInfo.Username,
+                        FirstName = registerInfo.FirstName,
+                        SecondName = registerInfo.SecondName
+                    };
+                    await _authorService.CreateAuthor(mapper.Map<AuthorDTO>(author));
+                }
             }
             catch (ValidationException ex)
             {
@@ -160,7 +176,7 @@ namespace CardFile.Web.Controllers
                 return View("Registration");
             }
 
-            return await Login(user);
+            return await Login(new LoginViewModel() { Username = registerInfo.Username, Password = registerInfo.Password });
         }
 
         public async Task<ActionResult> Logout()
@@ -174,7 +190,7 @@ namespace CardFile.Web.Controllers
             return RedirectToAction("Index", "Cards");
         }
 
-        [Authorize(Roles = "Admin, RegisteredUser")]
+        /*[Authorize(Roles = "Admin, RegisteredUser")]*/
         public async Task<ActionResult> Edit(int id)
         {
             AuthorDTO authorDTO = await _authorService.GetAuthor(id);
@@ -184,10 +200,15 @@ namespace CardFile.Web.Controllers
 
         // POST: Author/Edit/5
         [HttpPost]
-        [Authorize(Roles = "Admin, RegisteredUser")]
+        /*[Authorize(Roles = "Admin, RegisteredUser")]*/
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(AuthorViewModel author)
         {
+            if (!(await IsCurrentUserAnAuthor(3)))
+            {
+                return new ViewResult { ViewName = "~/Views/Shared/PermissionError.cshtml" };
+            }
+
             try
             {
                 if (ModelState.IsValid)
@@ -203,7 +224,7 @@ namespace CardFile.Web.Controllers
             }
             catch (Exception ex)
             {
-                return View();
+                 return View();
             }
         }
 
@@ -231,12 +252,8 @@ namespace CardFile.Web.Controllers
             }
         }
 
-        [NonAction]
         private async Task<bool> IsCurrentUserAnAuthor(int id)
         {
-            /*var authenticationManager = HttpContext.GetOwinContext().Authentication;
-            var username = authenticationManager.User.Identity.Name;*/
-            /*return username == author.Username;*/
             var author = await _authorService.GetAuthor(id);
             return CurrentUserUsername == author.Username;
         }

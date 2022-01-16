@@ -1,4 +1,5 @@
 ﻿using CardFile.DAL.Entities;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -10,7 +11,7 @@ namespace CardFile.DAL.Interfaces
     {
         IEnumerable<IdentityUser> GetUsers();
         IEnumerable<IdentityRole> GetRoles(string username);
-        Task<bool> CreateUser(UserAuthInfo user);
+        Task<IdentityResult> CreateUser(UserAuthInfo user);
         Task<bool> CreateRole(string role);
         Task<bool> GiveRoleToUser(string role, string username);
         Task<bool> RemoveUserFromRole(string username, string role);

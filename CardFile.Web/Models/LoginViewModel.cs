@@ -6,7 +6,7 @@ using System.Web;
 
 namespace CardFile.Web.Models
 {
-    public class UserAuthInfoViewModel
+    public class LoginViewModel
     {
         [Required]
         [StringLength(40, MinimumLength = 3, ErrorMessage = "User name size must be between 3 and 40 characters")]

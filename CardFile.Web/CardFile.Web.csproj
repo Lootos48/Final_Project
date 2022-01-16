@@ -182,10 +182,12 @@
     <Compile Include="Models\CardViewModel.cs" />
     <Compile Include="Models\PageFilter.cs" />
     <Compile Include="Models\PageInfoModel.cs" />
-    <Compile Include="Models\UserAuthInfoViewModel.cs" />
+    <Compile Include="Models\RegistrationViewModel.cs" />
+    <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\UserInfoViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\PageFiltration.cs" />
+    <Compile Include="Util\Pagination.cs" />
     <Compile Include="Util\ServiceModule.cs" />
     <Compile Include="App_Start\Startup.cs" />
   </ItemGroup>
@@ -269,6 +271,7 @@
     <Content Include="Views\Author\Login.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Author\Edit.cshtml" />
+    <Content Include="Views\Shared\PermissionError.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

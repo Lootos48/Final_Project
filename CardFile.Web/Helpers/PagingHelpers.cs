@@ -1,9 +1,6 @@
 ﻿using CardFile.Web.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 
 namespace CardFile.Web.Helpers
@@ -36,6 +33,9 @@ namespace CardFile.Web.Helpers
                 {
                     i = 1;
                 }
+
+                //?page=2 & SearchBy=Title & SearchString=World & sortOrder=Popular
+
                 tag.MergeAttribute("href", pageUrl(i));
                 tag.InnerHtml = i.ToString();
                 // если текущая страница, то выделяем ее,

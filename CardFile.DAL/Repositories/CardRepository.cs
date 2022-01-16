@@ -54,7 +54,7 @@ namespace CardFile.DAL.Repositories
 
         public async Task<bool> RemoveAsync(int id)
         {
-            var item = _context.Cards.Attach(new Card { Id = id });
+            var item = _context.Cards.Find(id);
             var result = item != null;
             if (result)
             {
