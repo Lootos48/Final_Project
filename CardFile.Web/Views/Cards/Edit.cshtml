@@ -5,61 +5,47 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Edit</h2>
+<h2 class="mx-lg-5 mb-3">Card information editor</h2>
+<div class="mx-lg-5 border border-1 rounded-3">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
 
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-    
     <div class="form-horizontal">
-        <h4>CardViewModel</h4>
-        <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
-
         <div class="form-group">
-            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2 fs-4" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.DateOfCreate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.DateOfCreate, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.DateOfCreate, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        @Html.HiddenFor(model => model.DateOfCreate)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2 fs-4" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Text, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.TextAreaFor(model => model.Text, 10, 100, new { htmlAttributes = new { @class = "form-control" }, })
                 @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.LikeAmount, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.LikeAmount, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.LikeAmount, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.LikeAmount)
+
+        <div class="form-group d-flex ml-3">
+            <div class="">
+                <a href="/Cards/Index" class="btn btn-outline-danger">Cancel</a>
+            </div>
+            <div class="ml-3">
+                <input type="submit" value="Save changes" class="btn btn-outline-success px-3" />
             </div>
         </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </div>
+        @Html.HiddenFor(model => model.AuthorId)
     </div>
-}
+    }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
 </div>
 
 @section Scripts {

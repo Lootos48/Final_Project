@@ -1,4 +1,6 @@
 ﻿using CardFile.BLL.Interfaces;
+using CardFile.Web.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,15 +13,35 @@ namespace CardFile.Web.Controllers
     public class AdminController : Controller
     {
         private readonly IIdentityService identityService;
-        public AdminController(IIdentityService identityService)
+        private readonly IAuthorsService authorsService;
+        public AdminController(IIdentityService identityService, IAuthorsService authorsServ)
         {
+            authorsService = authorsServ;
             this.identityService = identityService;
         }
 
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Index()
         {
-            return View();
+            var author = (await authorsService.GetAll()).First(y => y.Username == "User");
+            IEnumerable<IdentityRole> auth = identityService.GetRoles(author.Username);
+            List<string> roles = new List<string>();
+            foreach (var item in auth)
+            {
+                roles.Add(item.Name);
+            }
+            IEnumerable<UserInfoViewModel> userInfos = new List<UserInfoViewModel>()
+            {
+                new UserInfoViewModel()
+                {
+                    Username = author.Username,
+                    FirstName = author.FirstName,
+                    LastName = author.SecondName,
+                    Roles = roles.ToArray() 
+                }
+            };
+
+            return View(userInfos);
         }
 
         [Authorize(Roles = "Admin")]

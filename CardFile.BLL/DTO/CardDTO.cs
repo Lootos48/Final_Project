@@ -18,6 +18,7 @@ namespace CardFile.BLL.DTO
 
         public int LikeAmount { get; set; }
 
-        public virtual AuthorDTO Author { get; set; }
+        public int? AuthorId { get; set; }
+        public AuthorDTO Author { get; set; }
     }
 }

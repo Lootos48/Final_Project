@@ -12,6 +12,7 @@ using System.Web;
 using System.Web.Mvc;
 using CardFile.Web.Util;
 using CardFile.BLL.Services;
+using Microsoft.Owin.Security;
 
 namespace CardFile.Web.Controllers
 {
@@ -20,6 +21,21 @@ namespace CardFile.Web.Controllers
         readonly ICardsService _cardsService;
         readonly IAuthorsService _authorsService;
         readonly IMapper mapper;
+
+        private IAuthenticationManager _authManger
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().Authentication;
+            }
+        }
+        private string CurrentUserUsername
+        {
+            get
+            {
+                return _authManger.User.Identity.Name;
+            }
+        }
 
         public CardsController(ICardsService serv, IAuthorsService authorsServ)
         {
@@ -100,14 +116,12 @@ namespace CardFile.Web.Controllers
                 if (ModelState.IsValid)
                 {
 
-                    var authenticationManager = HttpContext.GetOwinContext().Authentication;
-                    var username = authenticationManager.User.Identity.Name;
-                    var author = await _authorsService.GetAuthor(a => a.Username == username);
-                    card.Author = mapper.Map<AuthorViewModel>(author);
+                    /*var authenticationManager = HttpContext.GetOwinContext().Authentication;
+                    var username = authenticationManager.User.Identity.Name;*/
+                    var author = await _authorsService.GetAuthor(a => a.Username == CurrentUserUsername);
+                    card.AuthorId = author.Id;
                     card.DateOfCreate = DateTime.Now;
-                    var createdCard = await _cardsService.CreateCard(mapper.Map<CardDTO>(card));
-                    await ProcedureService.AddAuthorToCard(card.Id, author.Id);
-                    card.Id = createdCard.Id;
+                    card = mapper.Map<CardViewModel>(await _cardsService.CreateCard(mapper.Map<CardDTO>(card)));
                 }
                 else
                 {
@@ -116,7 +130,6 @@ namespace CardFile.Web.Controllers
             }
             catch (Exception ex)
             {
-                return Content(ex.Message);
                 return View();
             }
 
@@ -128,9 +141,13 @@ namespace CardFile.Web.Controllers
         [Authorize(Roles = "Admin, RegisteredUser")]
         public async Task<ActionResult> Edit(int id)
         {
-            CardDTO cardDTO = await _cardsService.GetCard(id);
+            if (!await IsOwnerOfCard(id) && !User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index");
+            }
 
-            return View(mapper.Map<CardViewModel>(cardDTO));
+            CardDTO cardDTO = await _cardsService.GetCard(id);
+            return  View(mapper.Map<CardViewModel>(cardDTO));
         }
 
         // POST: Cards/Edit/5
@@ -152,35 +169,40 @@ namespace CardFile.Web.Controllers
 
                 return RedirectToAction("Details", new { id = card.Id });
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                return Content(ex.Message);
             }
         }
 
-        // GET: Cards/Delete/5
         [Authorize(Roles = "Admin, RegisteredUser")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            return View(await _cardsService.GetCard(id));
-        }
-
-        // POST: Cards/Delete/5
-        [HttpPost]
-        [Authorize(Roles = "Admin, RegisteredUser")]
-        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id, CardViewModel card)
         {
+            if (!await IsOwnerOfCard(id) && !User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index");
+            }
+
             try
             {
                 await _cardsService.DeleteCard(id);
 
                 return RedirectToAction("Index");
             }
-            catch
+            catch(Exception ex)
             {
-                return View();
+                return Content(ex.Message);
             }
+        }
+
+        [NonAction]
+        private async Task<bool> IsOwnerOfCard(int id)
+        {
+            /*var authenticationManager = HttpContext.GetOwinContext().Authentication;
+            var username = authenticationManager.User.Identity.Name;*/
+            /*return username == card.Author.Username;*/
+            var card = await _cardsService.GetCard(id);
+            return CurrentUserUsername == card.Author.Username;
         }
     }
 }

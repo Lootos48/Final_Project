@@ -17,7 +17,7 @@ namespace CardFile.BLL.DTO
 
         public string SecondName { get; set; }
 
-        public virtual ICollection<CardDTO> Cards { get; set; }
+        public ICollection<CardDTO> Cards { get; set; }
 
         public AuthorDTO()
         {

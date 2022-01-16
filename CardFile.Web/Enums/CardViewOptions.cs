@@ -17,6 +17,7 @@ namespace CardFile.Web.Enums
     public enum FilterOptions
     {
         Title = 1,
-        Text = 2
+        Text = 2,
+        Author = 3
     }
 }

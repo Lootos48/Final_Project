@@ -15,6 +15,10 @@ namespace CardFile.Web.Helpers
         {
             StringBuilder result = new StringBuilder();
 
+            if (pageInfo.TotalItems == 0)
+            {
+                return MvcHtmlString.Create(result.ToString());
+            }
             for (int i = pageInfo.PageNumber - 1; i <= pageInfo.PageNumber + 1; i++)
             {
                 if (pageInfo.PageNumber < 1)

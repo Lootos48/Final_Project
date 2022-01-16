@@ -13,17 +13,18 @@
 <body class="p-0">
     <header>
         <nav class="navbar navbar-expand navbar-light bg-light border-bottom shadow-sm">
-            <div class="container justify-content-center ">
+            <div class="container justify-content-center">
                 <ul class="navbar-nav nav-fill">
                     <li class="nav-item px-5 border-end">
-                        <a class="nav-link navbar-brand" href="/Cards/Index">Card files</a>
+                        <a class="nav-link navbar-brand " href="/Cards/Index">Card files</a>
                     </li>
+
                     <li class="nav-item px-5 border-end">
-                        <a class="nav-link" href="/Author/Details">Profile</a>
+                        <a class="nav-link" href="/Author/AuthorProfile?username=@User.Identity.Name">Profile</a>
                     </li>
                     @if (!User.Identity.IsAuthenticated)
                     {
-                        <li class="nav-item px-5 border-end">
+                        <li class="nav-item px-5">
                             <a class="nav-link" href="/Author/Login">Login</a>
                         </li>
                     }

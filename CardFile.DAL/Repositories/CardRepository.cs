@@ -37,12 +37,14 @@ namespace CardFile.DAL.Repositories
 
         public async Task<Card> FindByIdAsync(int id)
         {
-            return await _context.Cards.FindAsync(id);
+            var card = await _context.Cards.Include(c => c.Author).SingleOrDefaultAsync(x => x.Id == id);
+            return card;
         }
 
         public async Task<IEnumerable<Card>> GetAllAsync()
         {
-            return await _context.Cards.ToListAsync();
+            var cards = await _context.Cards.Include(c => c.Author).ToListAsync();
+            return cards;
         }
 
         public async Task<IEnumerable<Card>> GetAsync(Func<Card, bool> predicate)

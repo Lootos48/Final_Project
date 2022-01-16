@@ -27,8 +27,19 @@ namespace CardFile.DAL.Repositories
 
             _userManager.PasswordValidator = new PasswordValidator
             {
-                RequiredLength = 3
+                RequiredLength = 3,
             };
+        }
+
+        public IEnumerable<IdentityUser> GetUsers()
+        {
+            return _userManager.Users;
+        }
+
+        public IEnumerable<IdentityRole> GetRoles(string username)
+        {
+            var user = _userManager.Users.First(u => u.UserName == username);
+            return _roleManager.Roles.Where(x => x.Users.Any(y => y.UserId == user.Id));
         }
 
         public async Task<bool> CreateUser(UserAuthInfo user)

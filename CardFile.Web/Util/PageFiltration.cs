@@ -16,15 +16,15 @@ namespace CardFile.Web.Util
             {
                 if (card.Text.Length > 250)
                 {
-                    card.Text = card.Text.Substring(0, 250) + " ...";
+                    card.Text = card.Text.Substring(0, 250) + "...";
                 }
-                if (card.Author == null)
+                /*if (card.Author == null)
                 {
                     card.Author = new AuthorDTO
                     {
                         FirstName = "Annonymuos"
                     };
-                }
+                }*/
             }
             return cards;
         }
@@ -56,7 +56,7 @@ namespace CardFile.Web.Util
 
         public static IEnumerable<CardDTO> Transform(IEnumerable<CardDTO> cards, SortOptions sortOrder, PageFilter searchFilter)
         {
-            if (searchFilter != null)
+            if (searchFilter != null && searchFilter.SearchString != null)
             {
                 switch (searchFilter.SearchBy)
                 {
@@ -64,7 +64,13 @@ namespace CardFile.Web.Util
                         cards = cards.Where(c => c.Title.Contains(searchFilter.SearchString));
                         break;
                     case FilterOptions.Text:
-                        cards = cards.Where(c => c.Text == searchFilter.SearchString);
+                        cards = cards.Where(c => c.Text.Contains(searchFilter.SearchString));
+                        break;
+                    case FilterOptions.Author:
+                        cards = cards.Where(c => 
+                        c.Author.Username.Contains(searchFilter.SearchString) ||
+                        c.Author.FirstName.Contains(searchFilter.SearchString) ||
+                         c.Author.SecondName.Contains(searchFilter.SearchString));
                         break;
                     default:
                         break;

@@ -37,7 +37,7 @@ namespace CardFile.DAL.Entities
         [StringLength(60, MinimumLength = 3, ErrorMessage = "Second name size must be between 3 and 60 characters")]
         public string SecondName { get; set; }
 
-        public virtual ICollection<Card> Cards { get; set; }
+        public ICollection<Card> Cards { get; set; }
 
         /// <summary>
         /// Конструктор для инициализации списков связи 1-к-многим или многие-к-многим

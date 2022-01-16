@@ -9,6 +9,7 @@ using Microsoft.Owin.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -18,13 +19,28 @@ namespace CardFile.Web.Controllers
     public class AuthorController : Controller
     {
         readonly IAuthorsService _authorService;
-        readonly IIdentityService identityService;
+        readonly IIdentityService _identityService;
         readonly IMapper mapper;
+
+        private IAuthenticationManager _authManger
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().Authentication;
+            }
+        }
+        private string CurrentUserUsername
+        {
+            get
+            {
+                return _authManger.User.Identity.Name;
+            }
+        }
 
         public AuthorController(IAuthorsService serv, IIdentityService identityServ)
         {
             _authorService = serv;
-            identityService = identityServ;
+            _identityService = identityServ;
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -72,6 +88,20 @@ namespace CardFile.Web.Controllers
             return View("Index");
         }
 
+        public async Task<ActionResult> AuthorProfile(string username)
+        {
+            if (username == "" || username == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            AuthorDTO author = await _authorService.GetAuthor(a => a.Username == username);
+            if (author == null)
+            {
+                return HttpNotFound();
+            }
+            return View("Details", mapper.Map<AuthorViewModel>(author));
+        }
+
         public async Task<ActionResult> Login()
         {
             if (!User.Identity.IsAuthenticated)
@@ -89,9 +119,9 @@ namespace CardFile.Web.Controllers
             {
                 try
                 {
-                    var claimsIdentity = await identityService.GetUserClaims(mapper.Map<UserAuthInfoDTO>(user));
+                    var claimsIdentity = await _identityService.GetUserClaims(mapper.Map<UserAuthInfoDTO>(user));
                     var authenticationManager = HttpContext.GetOwinContext().Authentication;
-                    authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = true }, claimsIdentity);
+                    authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false }, claimsIdentity);
                 }
                 catch (ValidationException ex)
                 {
@@ -122,7 +152,7 @@ namespace CardFile.Web.Controllers
             }
             try
             {
-                var isCreated = await identityService.CreateUser(mapper.Map<UserAuthInfoDTO>(user));
+                var isCreated = await _identityService.CreateUser(mapper.Map<UserAuthInfoDTO>(user));
             }
             catch (ValidationException ex)
             {
@@ -171,7 +201,7 @@ namespace CardFile.Web.Controllers
 
                 return RedirectToAction("Details", new { id = author.Id });
             }
-            catch
+            catch (Exception ex)
             {
                 return View();
             }
@@ -199,6 +229,16 @@ namespace CardFile.Web.Controllers
             {
                 return View();
             }
+        }
+
+        [NonAction]
+        private async Task<bool> IsCurrentUserAnAuthor(int id)
+        {
+            /*var authenticationManager = HttpContext.GetOwinContext().Authentication;
+            var username = authenticationManager.User.Identity.Name;*/
+            /*return username == author.Username;*/
+            var author = await _authorService.GetAuthor(id);
+            return CurrentUserUsername == author.Username;
         }
     }
 }

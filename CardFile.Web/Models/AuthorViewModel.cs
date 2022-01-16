@@ -20,7 +20,7 @@ namespace CardFile.Web.Models
         public string SecondName { get; set; }
 
 
-        public virtual ICollection<CardViewModel> Cards { get; set; }
+        public ICollection<CardViewModel> Cards { get; set; }
 
         public AuthorViewModel()
         {

@@ -4,6 +4,7 @@ using CardFile.BLL.Infrastructure;
 using CardFile.BLL.Interfaces;
 using CardFile.DAL.Entities;
 using CardFile.DAL.Interfaces;
+using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +24,23 @@ namespace CardFile.BLL.Services
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<UserAuthInfoDTO, UserAuthInfo>();
+                cfg.CreateMap<IdentityUser, UserInfo>()
+                    .ForMember(x => x.Username, y => y.MapFrom(c => c.UserName));
             });
 
             mapper = config.CreateMapper();
         }
+
+        public IEnumerable<IdentityUser> GetUsers()
+        {
+            return identityProvider.GetUsers();
+        }
+
+        public IEnumerable<IdentityRole> GetRoles(string username)
+        {
+            return identityProvider.GetRoles(username);
+        }
+
         public async Task<bool> CreateUser(UserAuthInfoDTO user)
         {
             bool result = await identityProvider.CreateUser(mapper.Map<UserAuthInfo>(user));

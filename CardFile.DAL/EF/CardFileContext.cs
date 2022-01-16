@@ -35,11 +35,11 @@ namespace CardFile.DAL.EF
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
             // создаём связь 1-к-многим у таблиц Author и Cards 
-            /*modelBuilder.Entity<Author>()
-                .HasMany(c => c.Cards)
-                .WithRequired(a => a.Author);*/
             modelBuilder.Entity<Author>()
-                .HasMany(c => c.Cards);
+                .HasMany(c => c.Cards)
+                .WithRequired(a => a.Author)
+                .HasForeignKey(k => k.AuthorId)
+                .WillCascadeOnDelete(false);
         }
 
         /// <summary>

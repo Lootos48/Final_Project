@@ -14,8 +14,8 @@ namespace CardFile.Web.Models
         [Display(Name = "Card Title")]
         public string Title { get; set; }
 
-        public string DateOfCreateString 
-        { 
+        public string DateOfCreateString
+        {
             get
             {
                 return DateOfCreate.ToShortDateString();
@@ -31,6 +31,7 @@ namespace CardFile.Web.Models
         [Display(Name = "Likes")]
         public int LikeAmount { get; set; }
 
-        public virtual AuthorViewModel Author { get; set; }
+        public int? AuthorId { get; set; }
+        public AuthorViewModel Author { get; set; }
     }
 }
