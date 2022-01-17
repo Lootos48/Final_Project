@@ -21,6 +21,7 @@ namespace CardFile.Web.Controllers
         readonly ICardsService _cardsService;
         readonly IAuthorsService _authorsService;
         readonly IMapper mapper;
+        readonly ILikeService _likeService;
 
         private IAuthenticationManager _authManger
         {
@@ -37,8 +38,9 @@ namespace CardFile.Web.Controllers
             }
         }
 
-        public CardsController(ICardsService serv, IAuthorsService authorsServ)
+        public CardsController(ICardsService serv, IAuthorsService authorsServ, ILikeService _likeServ)
         {
+            _likeService = _likeServ;
             _cardsService = serv;
             _authorsService = authorsServ;
 
@@ -69,27 +71,30 @@ namespace CardFile.Web.Controllers
 
             var cards = mapper.Map<List<CardViewModel>>(dTOs);
 
-
             int pageSize = 8;
             return View(Pagination<CardViewModel>.PaginateObjects(cards, page, pageSize));
         }
 
+        [Authorize(Roles = "RegisteredUser,Admin")]
         public async Task<ActionResult> Like(int id)
         {
-            var card = await _cardsService.GetCard(id);
-
-            card.LikeAmount++;
-
-            bool isUpdated = await _cardsService.UpdateCard(card);
-
-            return RedirectToAction("Details", new { id = id });
+            var author = await _authorsService.GetAuthor(a => a.Username == CurrentUserUsername);
+            var result = await _likeService.LikeCard(id, author.Id);
+            if (result)
+            {
+                return RedirectToAction("Details", new { id = id });
+            }
+            return new ViewResult { ViewName = "~/Views/Shared/Error.cshtml" };
         }
 
-            // GET: Cards/Details/5
         public async Task<ActionResult> Details(int id)
         {
             CardDTO cardDTO = await _cardsService.GetCard(id);
-
+            if (CurrentUserUsername != "")
+            {
+                var author = await _authorsService.GetAuthor(a => a.Username == CurrentUserUsername);
+                ViewBag.IsAuthorAlreadyLikeCard = _likeService.IsAuthorAlreadyLikeCard(id, author.Id);
+            }
             return View(mapper.Map<CardViewModel>(cardDTO));
         }
 
@@ -99,10 +104,6 @@ namespace CardFile.Web.Controllers
         {
             return View();
         }
-
-
-
-
 
         // POST: Cards/Create
         [HttpPost]

@@ -33,33 +33,33 @@
         <div class="col-1 me-3 pt-3">
             <a href="/Cards/Index" class="btn btn-lg btn-outline-dark">Back to Cards</a>
         </div>
-        @if (User.Identity.Name == Model.Author.Username)
-        {
-            <div class="col-1 ml-5">
-                <a href="/Cards/Like/@Model.Id" class="text-decoration-none detailsLike liked pe-none">♥</a>
-            </div>
-        }
-        else
-        {
-            <div class="col-1 ml-5">
-                <a href="/Cards/Like/@Model.Id" class="text-decoration-none detailsLike">♥</a>
-            </div>
-        }
-        @*@if (User.IsInRole("Admin") || User.Identity.Name == Model.Author.Username)
-        {
-            <div class="col-1 ml-5 pt-3">
-                <a href="/Cards/Edit/@Model.Id" class="btn btn-lg btn-outline-dark px-4">Edit Card</a>
-            </div>
 
-            <div class="col-1 ml-5 pt-3">
-                <a href="/Cards/Delete/@Model.Id" class="btn btn-lg btn-outline-danger px-4">Remove Card</a>
-            </div>
-        }
-        else
+        @if (User.Identity.IsAuthenticated)
         {
-            <div class="col-1 ml-5">
-                <a href="/Cards/Like/@Model.Id" class="text-decoration-none detailsLike">♥</a>
-            </div>
-        }*@
+            if (User.IsInRole("Admin") || User.Identity.Name == Model.Author.Username)
+            {
+                <div class="col-1 ml-5 pt-3">
+                    <a href="/Cards/Edit/@Model.Id" class="btn btn-lg btn-outline-dark px-4">Edit Card</a>
+                </div>
+                <div class="col-1 ml-5 pt-3">
+                    <a href="/Cards/Delete/@Model.Id" class="btn btn-lg btn-outline-danger px-4">Delete Card</a>
+                </div>
+            }
+            else if (User.IsInRole("RegisteredUser"))
+            {
+                if (ViewBag.IsAuthorAlreadyLikeCard)
+                {
+                    <div class="col-1 ml-5">
+                        <a href="/Cards/Like/@Model.Id" class="text-decoration-none detailsLike liked pe-none">♥️</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-1 ml-5">
+                        <a href="/Cards/Like/@Model.Id" class="text-decoration-none detailsLike">♥️</a>
+                    </div>
+                }
+            }
+        }
     </div>
 </div>

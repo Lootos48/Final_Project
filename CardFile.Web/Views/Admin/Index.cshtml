@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CardFile.Web.Models.UserAuthInfoViewModel>
+﻿@model IEnumerable<CardFile.Web.Models.UserInfoViewModel>
 
 @{
     ViewBag.Title = "Index";
@@ -13,25 +13,54 @@
             @Html.DisplayNameFor(model => model.Username)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Password)
+            @Html.DisplayNameFor(model => model.FirstName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LastName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Roles)
         </th>
         <th></th>
     </tr>
 
 @foreach (var item in Model) {
-    <tr>
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Username)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.FirstName)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.LastName)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.RolesStr)
+    </td>
+    @using (Html.BeginForm("GiveRoleToUser", "Admin"))
+    {
+        @Html.HiddenFor(modelItem => item.Username, new { Name = "username" })
         <td>
-            @Html.DisplayFor(modelItem => item.Username)
+            @Html.DropDownListFor(modelItem => item.Roles, new SelectList(ViewBag.AllRoles), "Give user role", new { @class = "form-select", Name = "role", onchange = @"form.submit();" })
         </td>
+    }
+
+    @using (Html.BeginForm("RemoveUserFromRole", "Admin"))
+    {
+        @Html.HiddenFor(modelItem => item.Username, new { Name = "username" })
         <td>
-            @Html.DisplayFor(modelItem => item.Password)
+            @Html.DropDownListFor(modelItem => item.Roles, new SelectList(item.Roles), "Remove user role", new { @class = "form-select", Name = "role", onchange = @"form.submit();" })
         </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-        </td>
-    </tr>
+    }
+
+    <td>
+        <a href="/Author/AuthorProfile?username=@item.Username" class="btn btn-outline-dark">Profile</a>
+    </td>
+    <td>
+        <a href="/Admin/BanUser?username=@item.Username" class="btn btn-outline-danger">Ban</a>
+    </td>
+</tr>
 }
 
 </table>

@@ -1,4 +1,7 @@
-﻿using CardFile.DAL.Interfaces;
+﻿using CardFile.BLL.Interfaces;
+using CardFile.BLL.Services;
+using CardFile.DAL.EF;
+using CardFile.DAL.Interfaces;
 using CardFile.DAL.Repositories;
 using Ninject.Modules;
 using System;
@@ -14,7 +17,7 @@ namespace CardFile.BLL.Infrastructure
     /// </summary>
     public class UoWModule : NinjectModule
     {
-        private readonly string connectionString;
+        /*private readonly string connectionString;
 
         /// <summary>
         /// Конструктор Ninject-модуля
@@ -23,14 +26,16 @@ namespace CardFile.BLL.Infrastructure
         public UoWModule(string connection)
         {
             connectionString = connection;
-        }
+        }*/
 
         /// <summary>
         /// Метод привязки класса UnitOfWork к его интерфейсу и класса репозитория Identity к его интерфейса
         /// </summary>
         public override void Load()
         {
-            Bind<IUnitOfWork>().To<EFUnitOfWork>().WithConstructorArgument(connectionString);
+            var context = new CardFileContext();
+            Bind<ILikeService>().To<LikeService>().WithConstructorArgument("context", context);
+            Bind<IUnitOfWork>().To<EFUnitOfWork>().WithConstructorArgument("cardFileContext", context);
             Bind<IIdentityProvider>().To<IdentityProvider>();
         }
     }

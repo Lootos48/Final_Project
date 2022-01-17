@@ -23,7 +23,7 @@ namespace CardFile.Web
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             NinjectModule serviceModule = new ServiceModule();
-            NinjectModule uowModule = new UoWModule("CardFileDBConnection");
+            NinjectModule uowModule = new UoWModule();
             var kernel = new StandardKernel(serviceModule, uowModule);
             kernel.Unbind<ModelValidatorProvider>();
             DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));

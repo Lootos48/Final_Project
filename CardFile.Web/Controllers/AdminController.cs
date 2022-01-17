@@ -1,4 +1,4 @@
-﻿using CardFile.BLL.Interfaces;
+﻿ using CardFile.BLL.Interfaces;
 using CardFile.Web.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
@@ -23,23 +23,21 @@ namespace CardFile.Web.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Index()
         {
-            var author = (await authorsService.GetAll()).First(y => y.Username == "User");
-            IEnumerable<IdentityRole> auth = identityService.GetRoles(author.Username);
-            List<string> roles = new List<string>();
-            foreach (var item in auth)
+            var authors = await authorsService.GetAll();
+            ICollection<UserInfoViewModel> userInfos = new List<UserInfoViewModel>();
+            foreach (var author in authors)
             {
-                roles.Add(item.Name);
-            }
-            IEnumerable<UserInfoViewModel> userInfos = new List<UserInfoViewModel>()
-            {
-                new UserInfoViewModel()
+                List<string> userRole = (List<string>)await identityService.GetUserRoles(author.Username);
+
+                userInfos.Add(new UserInfoViewModel()
                 {
                     Username = author.Username,
                     FirstName = author.FirstName,
                     LastName = author.SecondName,
-                    Roles = roles.ToArray() 
-                }
-            };
+                    Roles = userRole.ToArray()
+                });
+            }
+            ViewBag.AllRoles = identityService.GetRoles();
 
             return View(userInfos);
         }
@@ -75,6 +73,16 @@ namespace CardFile.Web.Controllers
                 return RedirectToAction("Index");
             }
             return RedirectToAction("GiveRoleToUserFailView");
+        }
+
+        public async Task<ActionResult> BanUser(string username)
+        {
+            var result = await identityService.RemoveUserFromAllRoles(username);
+            if (result)
+            {
+                return RedirectToAction("Index");
+            }
+            return View("Error");
         }
     }
 }

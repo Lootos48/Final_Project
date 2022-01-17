@@ -28,9 +28,13 @@ namespace CardFile.DAL.Repositories
         /// Конструктор который создаёт новый объект контекста БД
         /// </summary>
         /// <param name="connectionString">Строка подключения к БД</param>
-        public EFUnitOfWork(string connectionString)
+        /*public EFUnitOfWork(string connectionString)
         {
             db = new CardFileContext(connectionString);
+        }*/
+        public EFUnitOfWork(CardFileContext cardFileContext)
+        {
+            db = cardFileContext;
         }
 
         public IRepository<Author> Authors

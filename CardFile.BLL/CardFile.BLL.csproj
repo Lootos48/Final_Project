@@ -72,11 +72,12 @@
     <Compile Include="Interfaces\IAuthorsService.cs" />
     <Compile Include="Interfaces\ICardsService.cs" />
     <Compile Include="Interfaces\IIdentityService.cs" />
+    <Compile Include="Interfaces\ILikeService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AuthorService.cs" />
     <Compile Include="Services\CardsService.cs" />
     <Compile Include="Services\IdentityService.cs" />
-    <Compile Include="Services\ProcedureService.cs" />
+    <Compile Include="Services\LikeService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -17,7 +17,7 @@ namespace CardFile.DAL.EF
     /// </summary>
     public class CardFileContext : DbContext
     {
-        public CardFileContext(string connectionString) : base(connectionString) { }
+        /*public CardFileContext(string connectionString) : base(connectionString) { }*/
 
         /// <summary>
         /// Поле коллекции сущностей  Author
@@ -65,12 +65,12 @@ namespace CardFile.DAL.EF
     /// <summary>
     /// Класс для обеспечения работы Code-first миграций, который позволяет миграциям создавать объект класса контекста БД
     /// </summary>
-    public class CardFileContextFactory : IDbContextFactory<CardFileContext>
+    /*public class CardFileContextFactory : IDbContextFactory<CardFileContext>
     {
         public CardFileContext Create()
         {
             string connectionString = @"Server=(localdb)\mssqllocaldb;Database=CardFileDB;Trusted_Connection=True;";
             return new CardFileContext(connectionString);
         }
-    }
+    }*/
 }

@@ -11,5 +11,13 @@ namespace CardFile.Web.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string[] Roles { get; set; }
+
+        public string RolesStr
+        {
+            get
+            {
+                return string.Join(", ", Roles);
+            }
+        }
     }
 }

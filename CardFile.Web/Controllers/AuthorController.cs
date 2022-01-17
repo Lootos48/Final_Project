@@ -190,9 +190,14 @@ namespace CardFile.Web.Controllers
             return RedirectToAction("Index", "Cards");
         }
 
-        /*[Authorize(Roles = "Admin, RegisteredUser")]*/
+        [Authorize(Roles = "Admin, RegisteredUser")]
         public async Task<ActionResult> Edit(int id)
         {
+            if (!(await IsCurrentUserAnAuthor(id)) && !User.IsInRole("Admin"))
+            {
+                return new ViewResult { ViewName = "~/Views/Shared/PermissionError.cshtml" };
+            }
+
             AuthorDTO authorDTO = await _authorService.GetAuthor(id);
 
             return View(mapper.Map<AuthorViewModel>(authorDTO));
@@ -200,11 +205,11 @@ namespace CardFile.Web.Controllers
 
         // POST: Author/Edit/5
         [HttpPost]
-        /*[Authorize(Roles = "Admin, RegisteredUser")]*/
+        [Authorize(Roles = "Admin, RegisteredUser")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(AuthorViewModel author)
         {
-            if (!(await IsCurrentUserAnAuthor(3)))
+            if (!(await IsCurrentUserAnAuthor(author.Id)) && !User.IsInRole("Admin"))
             {
                 return new ViewResult { ViewName = "~/Views/Shared/PermissionError.cshtml" };
             }

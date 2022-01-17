@@ -36,10 +36,14 @@ namespace CardFile.BLL.Services
         {
             return identityProvider.GetUsers();
         }
-
-        public IEnumerable<IdentityRole> GetRoles(string username)
+        public List<string> GetRoles()
         {
-            return identityProvider.GetRoles(username);
+            return identityProvider.GetRoles();
+        }
+
+        public async Task<IList<string>> GetUserRoles(string username)
+        {
+            return await identityProvider.GetUserRoles(username);
         }
 
         public async Task<bool> CreateUser(UserAuthInfoDTO user)
@@ -68,6 +72,10 @@ namespace CardFile.BLL.Services
         public async Task<bool> RemoveUserFromRole(string username, string role)
         {
             return await identityProvider.RemoveUserFromRole(username, role);
+        }
+        public async Task<bool> RemoveUserFromAllRoles(string username)
+        {
+            return await identityProvider.RemoveUserFromAllRoles(username);
         }
 
         public async Task<ClaimsIdentity> GetUserClaims(UserAuthInfoDTO user)

@@ -37,10 +37,21 @@ namespace CardFile.DAL.Repositories
             return _userManager.Users;
         }
 
-        public IEnumerable<IdentityRole> GetRoles(string username)
+        public List<string> GetRoles()
         {
-            var user = _userManager.Users.First(u => u.UserName == username);
-            return _roleManager.Roles.Where(x => x.Users.Any(y => y.UserId == user.Id));
+            List<string> roles = new List<string>();
+            foreach (var role in _roleManager.Roles)
+            {
+                roles.Add(role.Name);
+            }
+            return roles;
+        }
+
+
+        public async Task<IList<string>> GetUserRoles(string username)
+        {
+            string userId = _userManager.FindByName(username).Id;
+            return await _userManager.GetRolesAsync(userId);
         }
 
         public async Task<IdentityResult> CreateUser(UserAuthInfo user)
@@ -81,6 +92,14 @@ namespace CardFile.DAL.Repositories
             }
             var userIdentity = _userManager.CreateIdentity(identityUser, DefaultAuthenticationTypes.ApplicationCookie);
             return userIdentity;
+        }
+
+        public async Task<bool> RemoveUserFromAllRoles(string username)
+        {
+            var userId = _userManager.Users.First(u => u.UserName == username).Id;
+            string[] userRoles = (await GetUserRoles(username)).ToArray();
+            var result = await _userManager.RemoveFromRolesAsync(userId, userRoles);
+            return result.Succeeded;
         }
 
     }

@@ -37,7 +37,6 @@ select {
     color: white ;
     font-size: 35px;
     transition: 0.2s;
-    cursor: pointer
 }
 
 .detailsLike {
