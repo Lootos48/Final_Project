@@ -64,6 +64,7 @@ namespace CardFile.BLL.Services
             }
 
             Card createdEntity = await Database.Cards.CreateAsync(mapper.Map<Card>(cardDto));
+            await Database.SaveAsync();
 
             return mapper.Map<CardDTO>(createdEntity);
         }
@@ -74,7 +75,7 @@ namespace CardFile.BLL.Services
 
             if (card == null)
             {
-                throw new ObjectNotFoundException(typeof(Card), id.Value.ToString(), "Object wan`t found by ID");
+                throw new ObjectNotFoundException("Card wasn`t found");
             }
 
             return mapper.Map<CardDTO>(card);
@@ -91,14 +92,28 @@ namespace CardFile.BLL.Services
             {
                 throw new ValidationException("Card with the same title is already exist", "Title");
             }
+            
 
             Card card = mapper.Map<Card>(cardDTO);
-            return await Database.Cards.UpdateAsync(card);
+            bool isUpdated = await Database.Cards.UpdateAsync(card);
+            if (!isUpdated)
+            {
+                throw new ObjectNotFoundException("Card wasn`t found");
+            }
+            await Database.SaveAsync();
+
+            return isUpdated;
         }
 
         public async Task<bool> DeleteCard(int id)
         {
-            return await Database.Cards.RemoveAsync(id);
+            bool isDeleted = await Database.Cards.RemoveAsync(id);
+            if (!isDeleted)
+            {
+                throw new ObjectNotFoundException("Card wasn`t found");
+            }
+            await Database.SaveAsync();
+            return isDeleted;
         }
 
         #endregion

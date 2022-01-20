@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CardFile.BLL.DTO;
+using CardFile.BLL.Infrastructure;
 using CardFile.BLL.Interfaces;
 using CardFile.DAL.Entities;
 using CardFile.DAL.Interfaces;
@@ -59,12 +60,19 @@ namespace CardFile.BLL.Services
         {
             Author createdEntity = await Database.Authors.CreateAsync(mapper.Map<Author>(authorDto));
 
+            await Database.SaveAsync();
+
             return mapper.Map<AuthorDTO>(createdEntity);
         }
 
         public async Task<AuthorDTO> GetAuthor(int? id)
         {
             var author = await Database.Authors.FindByIdAsync(id.Value);
+
+            if (author == null)
+            {
+                throw new ObjectNotFoundException("Author wasn`t found");
+            }
 
             return mapper.Map<AuthorDTO>(author);
         }
@@ -73,7 +81,13 @@ namespace CardFile.BLL.Services
         {
             var authors = await Database.Authors.GetAllAsync();
             var authorsDTO = mapper.Map<IEnumerable<AuthorDTO>>(authors);
-            return authorsDTO.FirstOrDefault(predicate);
+
+            AuthorDTO author = authorsDTO.FirstOrDefault(predicate);
+            if (author == null)
+            {
+                throw new ObjectNotFoundException("Author wasn`t found");
+            }
+            return author;
         }
 
         public async Task<IEnumerable<AuthorDTO>> GetAll()
@@ -84,12 +98,28 @@ namespace CardFile.BLL.Services
         public async Task<bool> UpdateAuthor(AuthorDTO authorDTO)
         {
             Author author = mapper.Map<Author>(authorDTO);
-            return await Database.Authors.UpdateAsync(author);
+
+            bool isUpdated = await Database.Authors.UpdateAsync(author);
+            if (!isUpdated)
+            {
+                throw new ObjectNotFoundException("Author wasn`t found");
+            }
+
+            await Database.SaveAsync();
+            return isUpdated;
         }
 
         public async Task<bool> DeleteAuthor(int id)
-        { 
-            return await Database.Authors.RemoveAsync(id);
+        {
+            bool isDeleted = await Database.Authors.RemoveAsync(id);
+
+            if (!isDeleted)
+            {
+                throw new ObjectNotFoundException("Author wasn`t found");
+            }
+
+            await Database.SaveAsync();
+            return isDeleted;
         }
 
         #endregion

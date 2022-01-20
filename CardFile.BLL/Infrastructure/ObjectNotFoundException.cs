@@ -13,19 +13,7 @@ namespace CardFile.BLL.Infrastructure
 
     public class ObjectNotFoundException : Exception
     {
-        /// <summary>
-        /// Тип искомого объекта
-        /// </summary>
-        public Type ObjectType { get; set; }
-
-        /// <summary>
-        /// Идентификатор, по которому пытались получить объект
-        /// </summary>
-        public string ObjectId { get; set; }
-        public ObjectNotFoundException(Type objectType, string objectId, string message) : base(message)
-        {
-            ObjectType = objectType;
-            ObjectId = objectId;
-        }
+        public ObjectNotFoundException(string message) : base(message)
+        { }
     }
 }

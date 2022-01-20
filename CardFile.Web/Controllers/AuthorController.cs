@@ -28,7 +28,7 @@ namespace CardFile.Web.Controllers
         /// <summary>
         /// Поле для работы с OWIN-контекстом
         /// </summary>
-        private IAuthenticationManager _authManger
+        private IAuthenticationManager _authManager
         {
             get
             {
@@ -43,7 +43,7 @@ namespace CardFile.Web.Controllers
         {
             get
             {
-                return _authManger.User.Identity.Name;
+                return _authManager.User.Identity.Name;
             }
         }
 
@@ -86,16 +86,29 @@ namespace CardFile.Web.Controllers
         }
 
         // GET: Author/Details/5
+        [HttpGet]
         [Authorize(Roles = "Admin, RegisteredUser")]
-        public async Task<ActionResult> Details(int id)
+        public async Task<ActionResult> Details(int? id)
         {
-            if (User.Identity.IsAuthenticated)
+            try
             {
-                AuthorDTO authorDTO = await _authorService.GetAuthor(id);
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                if (User.Identity.IsAuthenticated)
+                {
+                    AuthorDTO authorDTO = await _authorService.GetAuthor(id.Value);
 
-                return View(mapper.Map<AuthorViewModel>(authorDTO));
+                    return View(mapper.Map<AuthorViewModel>(authorDTO));
+                }
+                return View("Index");
             }
-            return View("Index");
+            catch (ObjectNotFoundException)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
+            
         }
 
         public async Task<ActionResult> AuthorProfile(string username)
@@ -104,10 +117,12 @@ namespace CardFile.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             AuthorDTO author = await _authorService.GetAuthor(a => a.Username == username);
+
             if (author == null)
             {
-                return HttpNotFound();
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
             return View("Details", mapper.Map<AuthorViewModel>(author));
         }
@@ -198,24 +213,37 @@ namespace CardFile.Web.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                var authenticationManager = HttpContext.GetOwinContext().Authentication;
-                authenticationManager.SignOut();
+                /*var authenticationManager = HttpContext.GetOwinContext().Authentication;
+                authenticationManager.SignOut();*/
+                _authManager.SignOut();
             }
 
             return RedirectToAction("Index", "Cards");
         }
 
         [Authorize(Roles = "Admin, RegisteredUser")]
-        public async Task<ActionResult> Edit(int id)
+        public async Task<ActionResult> Edit(int? id)
         {
-            if (!(await IsCurrentUserAnAuthor(id)) && !User.IsInRole("Admin"))
+            try
             {
-                return new ViewResult { ViewName = "~/Views/Shared/PermissionError.cshtml" };
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                if (!(await IsCurrentUserAnAuthor(id.Value)) && !User.IsInRole("Admin"))
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+                }
+
+                AuthorDTO authorDTO = await _authorService.GetAuthor(id.Value);
+
+                return View(mapper.Map<AuthorViewModel>(authorDTO));
             }
-
-            AuthorDTO authorDTO = await _authorService.GetAuthor(id);
-
-            return View(mapper.Map<AuthorViewModel>(authorDTO));
+            catch (ObjectNotFoundException)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
+            
         }
 
         // POST: Author/Edit/5
@@ -224,44 +252,49 @@ namespace CardFile.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(AuthorViewModel author)
         {
-            if (!(await IsCurrentUserAnAuthor(author.Id)) && !User.IsInRole("Admin"))
+            try
             {
-                return new ViewResult { ViewName = "~/Views/Shared/PermissionError.cshtml" };
-            }
+                if (!(await IsCurrentUserAnAuthor(author.Id)) && !User.IsInRole("Admin"))
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+                }
 
-            if (ModelState.IsValid)
-            {
-                await _authorService.UpdateAuthor(mapper.Map<AuthorDTO>(author));
+                if (ModelState.IsValid)
+                {
+                    await _authorService.UpdateAuthor(mapper.Map<AuthorDTO>(author));
+                }
+                else
+                {
+                    return View();
+                }
+
+                return RedirectToAction("Details", new { id = author.Id });
             }
-            else
+            catch (ValidationException ex)
             {
+                ModelState.AddModelError(ex.Property, ex);
                 return View();
             }
-
-            return RedirectToAction("Details", new { id = author.Id });
         }
 
-        [Authorize(Roles = "Admin, RegisteredUser")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            return View(await _authorService.GetAuthor(id));
-        }
-
-        // POST: Author/Delete/5
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(int id, AuthorViewModel author)
+        public async Task<ActionResult> Delete(int? id)
         {
             try
             {
-                await _authorService.DeleteAuthor(id);
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                await _authorService.DeleteAuthor(id.Value);
 
                 return RedirectToAction("Index");
             }
-            catch
+            catch(ObjectNotFoundException)
             {
-                return View();
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
         }
 
@@ -277,6 +310,11 @@ namespace CardFile.Web.Controllers
             return CurrentUserUsername == author.Username;
         }
 
+        /// <summary>
+        /// Метод для получения строчного массива всех ошибок валидации
+        /// </summary>
+        /// <param name="exceptionMessage">Строку всех ошибок</param>
+        /// <returns>Массив строк с ошибками валидации</returns>
         [NonAction]
         private string[] GetErrorsArray(string exceptionMessage)
         {

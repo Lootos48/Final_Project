@@ -178,6 +178,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AuthorController.cs" />
     <Compile Include="Controllers\CardsController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Enums\CardViewOptions.cs" />
     <Compile Include="Filters\ExceptionHandleFilter.cs" />
     <Compile Include="Filters\LoggerFilter.cs" />
@@ -277,8 +278,9 @@
     <Content Include="Views\Author\Login.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Author\Edit.cshtml" />
-    <Content Include="Views\Shared\PermissionError.cshtml" />
-    <Content Include="Views\Shared\NotFoundError.cshtml" />
+    <Content Include="Views\Error\PermissionError.cshtml" />
+    <Content Include="Views\Error\BadRequest.cshtml" />
+    <Content Include="Views\Error\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

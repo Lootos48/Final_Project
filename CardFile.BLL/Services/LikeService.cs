@@ -1,6 +1,7 @@
 ﻿using CardFile.BLL.Interfaces;
 using CardFile.DAL.EF;
 using CardFile.DAL.Entities;
+using System.Data.Entity.Core;
 using System.Linq;
 using System.Threading.Tasks;
 

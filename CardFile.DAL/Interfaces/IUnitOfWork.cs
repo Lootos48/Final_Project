@@ -23,5 +23,7 @@ namespace CardFile.DAL.Interfaces
         /// Поле доступа к репозиторию через которое будет производиться работа с БД с сущностями типа Cards
         /// </summary>
         IRepository<Card> Cards { get; }
+
+        Task SaveAsync();
     }
 }

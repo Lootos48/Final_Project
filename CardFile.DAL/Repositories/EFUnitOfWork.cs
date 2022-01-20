@@ -58,8 +58,12 @@ namespace CardFile.DAL.Repositories
                 return cardRepository;
             }
         }
+        public async Task SaveAsync()
+        {
+            await db.SaveChangesAsync();
+        }
 
-         #region [ IDisposable interface implementation]
+        #region [ IDisposable interface implementation]
         private bool disposed = false;
         public virtual void Dispose(bool disposing)
         {
@@ -78,6 +82,7 @@ namespace CardFile.DAL.Repositories
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
         #endregion
     }
 }

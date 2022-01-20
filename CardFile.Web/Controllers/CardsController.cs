@@ -85,7 +85,7 @@ namespace CardFile.Web.Controllers
             return View(Pagination<CardViewModel>.PaginateObjects(cards, page, pageSize, searchFilter, sortOrder));
         }
 
-        [Authorize(Roles = "RegisteredUser,Admin")]
+        [Authorize(Roles = "RegisteredUser")]
         public async Task<ActionResult> Like(int id)
         {
             var author = await _authorsService.GetAuthor(a => a.Username == CurrentUserUsername);
@@ -97,15 +97,28 @@ namespace CardFile.Web.Controllers
             return new ViewResult { ViewName = "~/Views/Shared/Error.cshtml" };
         }
 
-        public async Task<ActionResult> Details(int id)
+        [HttpGet]
+        public async Task<ActionResult> Details(int? id)
         {
-            CardDTO cardDTO = await _cardsService.GetCard(id);
-            if (CurrentUserUsername != "")
+            try
             {
-                var author = await _authorsService.GetAuthor(a => a.Username == CurrentUserUsername);
-                ViewBag.IsAuthorAlreadyLikeCard = _likeService.IsAuthorAlreadyLikeCard(id, author.Id);
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                CardDTO cardDTO = await _cardsService.GetCard(id.Value);
+
+                if (CurrentUserUsername != "")
+                {
+                    var author = await _authorsService.GetAuthor(a => a.Username == CurrentUserUsername);
+                    ViewBag.IsAuthorAlreadyLikeCard = _likeService.IsAuthorAlreadyLikeCard(id.Value, author.Id);
+                }
+                return View(mapper.Map<CardViewModel>(cardDTO));
             }
-            return View(mapper.Map<CardViewModel>(cardDTO));
+            catch (ObjectNotFoundException)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
         }
 
         // GET: Cards/Create
@@ -144,22 +157,26 @@ namespace CardFile.Web.Controllers
             return RedirectToAction("Details", new { id = card.Id });
         }
 
-        // GET: Cards/Edit/5
+        [HttpGet]
         [Authorize(Roles = "Admin, RegisteredUser")]
-        public async Task<ActionResult> Edit(int id)
+        public async Task<ActionResult> Edit(int? id)
         {
-            if (!await IsOwnerOfCard(id) && !User.IsInRole("Admin"))
-            {
-                return new ViewResult { ViewName = "~/Views/Shared/PermissionError.cshtml" };
-            }
-
             try
             {
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                else if (!await IsOwnerOfCard(id.Value) && !User.IsInRole("Admin"))
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+                }
 
-                CardDTO cardDTO = await _cardsService.GetCard(id);
+
+                CardDTO cardDTO = await _cardsService.GetCard(id.Value);
                 return View(mapper.Map<CardViewModel>(cardDTO));
             }
-            catch (ObjectNotFoundException ex)
+            catch (ObjectNotFoundException)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
@@ -171,13 +188,13 @@ namespace CardFile.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(CardViewModel card)
         {
-            if (!await IsOwnerOfCard(card.Id) && !User.IsInRole("Admin"))
-            {
-                return new ViewResult { ViewName = "~/Views/Shared/PermissionError.cshtml" };
-            }
-
             try
             {
+                if (!await IsOwnerOfCard(card.Id) && !User.IsInRole("Admin"))
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+                }
+
                 if (ModelState.IsValid)
                 {
                     await _cardsService.UpdateCard(mapper.Map<CardDTO>(card));
@@ -197,20 +214,24 @@ namespace CardFile.Web.Controllers
         }
 
         [Authorize(Roles = "Admin, RegisteredUser")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int? id)
         {
-            if (!await IsOwnerOfCard(id) && !User.IsInRole("Admin"))
-            {
-                return new ViewResult { ViewName = "~/Views/Shared/PermissionError.cshtml" };
-            }
-
             try
             {
-                await _cardsService.DeleteCard(id);
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                else if (!await IsOwnerOfCard(id.Value) && !User.IsInRole("Admin"))
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.Forbidden);
+                }
+
+                await _cardsService.DeleteCard(id.Value);
 
                 return RedirectToAction("Index");
             }
-            catch(ObjectNotFoundException ex)
+            catch(ObjectNotFoundException)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
