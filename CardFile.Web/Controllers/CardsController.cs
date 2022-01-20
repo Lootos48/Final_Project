@@ -13,6 +13,8 @@ using System.Web.Mvc;
 using CardFile.Web.Util;
 using CardFile.BLL.Services;
 using Microsoft.Owin.Security;
+using CardFile.BLL.Infrastructure;
+using System.Net;
 
 namespace CardFile.Web.Controllers
 {
@@ -23,6 +25,9 @@ namespace CardFile.Web.Controllers
         readonly IMapper mapper;
         readonly ILikeService _likeService;
 
+        /// <summary>
+        /// Поле для работы с OWIN-контекстом
+        /// </summary>
         private IAuthenticationManager _authManger
         {
             get
@@ -30,6 +35,11 @@ namespace CardFile.Web.Controllers
                 return HttpContext.GetOwinContext().Authentication;
             }
         }
+
+
+        /// <summary>
+        /// Свойство для получения никнейма текущего аутентифицированного пользователя
+        /// </summary>
         private string CurrentUserUsername
         {
             get
@@ -72,7 +82,7 @@ namespace CardFile.Web.Controllers
             var cards = mapper.Map<List<CardViewModel>>(dTOs);
 
             int pageSize = 8;
-            return View(Pagination<CardViewModel>.PaginateObjects(cards, page, pageSize));
+            return View(Pagination<CardViewModel>.PaginateObjects(cards, page, pageSize, searchFilter, sortOrder));
         }
 
         [Authorize(Roles = "RegisteredUser,Admin")]
@@ -125,11 +135,11 @@ namespace CardFile.Web.Controllers
                     return View();
                 }
             }
-            catch (Exception ex)
+            catch (ValidationException ex)
             {
-                return View();
+                ModelState.AddModelError(ex.Property, ex.Message);
+                return View("Create");
             }
-
 
             return RedirectToAction("Details", new { id = card.Id });
         }
@@ -140,11 +150,19 @@ namespace CardFile.Web.Controllers
         {
             if (!await IsOwnerOfCard(id) && !User.IsInRole("Admin"))
             {
-                return RedirectToAction("Index");
+                return new ViewResult { ViewName = "~/Views/Shared/PermissionError.cshtml" };
             }
 
-            CardDTO cardDTO = await _cardsService.GetCard(id);
-            return  View(mapper.Map<CardViewModel>(cardDTO));
+            try
+            {
+
+                CardDTO cardDTO = await _cardsService.GetCard(id);
+                return View(mapper.Map<CardViewModel>(cardDTO));
+            }
+            catch (ObjectNotFoundException ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
         }
 
         // POST: Cards/Edit/5
@@ -153,6 +171,11 @@ namespace CardFile.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(CardViewModel card)
         {
+            if (!await IsOwnerOfCard(card.Id) && !User.IsInRole("Admin"))
+            {
+                return new ViewResult { ViewName = "~/Views/Shared/PermissionError.cshtml" };
+            }
+
             try
             {
                 if (ModelState.IsValid)
@@ -166,9 +189,10 @@ namespace CardFile.Web.Controllers
 
                 return RedirectToAction("Details", new { id = card.Id });
             }
-            catch(Exception ex)
+            catch(ValidationException ex)
             {
-                return Content(ex.Message);
+                ModelState.AddModelError(ex.Property, ex.Message);
+                return View();
             }
         }
 
@@ -177,7 +201,7 @@ namespace CardFile.Web.Controllers
         {
             if (!await IsOwnerOfCard(id) && !User.IsInRole("Admin"))
             {
-                return RedirectToAction("Index");
+                return new ViewResult { ViewName = "~/Views/Shared/PermissionError.cshtml" };
             }
 
             try
@@ -186,12 +210,17 @@ namespace CardFile.Web.Controllers
 
                 return RedirectToAction("Index");
             }
-            catch(Exception ex)
+            catch(ObjectNotFoundException ex)
             {
-                return Content(ex.Message);
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
         }
 
+        /// <summary>
+        /// Метод для проверки является ли текущий пользователь владельцем редактируемой карточки
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [NonAction]
         private async Task<bool> IsOwnerOfCard(int id)
         {

@@ -36,21 +36,21 @@ namespace CardFile.DAL.Interfaces
         /// Асинхронный метод для получения сущности что соответствует переданному предикату
         /// </summary>
         /// <param name="predicate">Предикат для филтрации выборки</param>
-        /// <returns>Коллекцию сущностей что соответствует переданному предикату</returns>
+        /// <returns>Коллекцию сущностей <see cref="IEnumerable{TEntity}"/> что соответствует переданному предикату</returns>
         Task<IEnumerable<TEntity>> GetAsync(Func<TEntity, bool> predicate);
 
         /// <summary>
         /// Асинхронный метод для удаления сущности из БД
         /// </summary>
         /// <param name="id">Идентификатор искомой сущности</param>
-        /// <returns>True - если сущность была удалена, False - если нет</returns>
+        /// <returns><see langword="true"/> - если сущность была удалена, <seealso langword="false"/> - если нет</returns>
         Task<bool> RemoveAsync(int id);
 
         /// <summary>
         /// Асинхронный метод для изменения сущности в БД
         /// </summary>
         /// <param name="item">Сущность которую нужно поменять</param>
-        /// <returns>True - если сущность была обновлена, False - если нет</returns>
+        /// <returns>><see langword="true"/> - если сущность была обновлена, <seealso langword="false"/> - если нет</returns>
         Task<bool> UpdateAsync(TEntity item);
     }
 }

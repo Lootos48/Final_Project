@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace CardFile.BLL.DTO
 {
+    /// <summary>
+    /// DTO сущности карточки
+    /// </summary>
     public class CardDTO
     {
         public int Id { get; set; }

@@ -15,17 +15,34 @@ using System.Threading.Tasks;
 
 namespace CardFile.BLL.Services
 {
+    /// <summary>
+    /// Класс реализации интерфейса <see cref="IIdentityService"/>
+    /// <inheritdoc cref="IIdentityService"/>
+    /// </summary>
     public class IdentityService : IIdentityService
     {
+        /// <summary>
+        /// Поле для вызова CRUD-операций интерфейса <see cref="IIdentityProvider"/>
+        /// </summary>
         private readonly IIdentityProvider identityProvider;
+
+        /// <summary>
+        /// Поле для инициализации маппера
+        /// </summary>
         private readonly IMapper mapper;
+
+        /// <summary>
+        /// Конструктор, который принимает интерфейс <see cref="IIdentityService"/>,
+        /// Задаёт конфигурацию авто-маппера и инициализирует поля класса
+        /// </summary>
+        /// <param name="identityProvider">Интерфейс <see cref="IIdentityService"/> устанавливается с помощью IoC-контейнера</param>
         public IdentityService(IIdentityProvider identityProvider)
         {
             this.identityProvider = identityProvider;
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<UserAuthInfoDTO, UserAuthInfo>();
-                cfg.CreateMap<IdentityUser, UserInfo>()
+                cfg.CreateMap<IdentityUser, UserInfoDTO>()
                     .ForMember(x => x.Username, y => y.MapFrom(c => c.UserName));
             });
 
@@ -56,9 +73,8 @@ namespace CardFile.BLL.Services
             }
             else
             {
-                throw new ValidationException(string.Join(", ", isCreated.Errors), "");
+                throw new ValidationException(string.Join(".", isCreated.Errors), "");
             }
-            return isCreated.Succeeded;
         }
         public async Task<bool> CreateRole(string role)
         {

@@ -19,7 +19,7 @@ namespace CardFile.DAL.Repositories
         readonly CardFileContext _context;
 
         /// <summary>
-        /// Конструктор класса который обеспечивает работу репозитория с контекстом БД
+        /// Конструктор класса который передаёт контекст БД репозиторию
         /// </summary>
         /// <param name="context">Объект класса контекста БД</param>
         public CardRepository(CardFileContext context)

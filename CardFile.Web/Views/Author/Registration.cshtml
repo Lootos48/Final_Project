@@ -11,7 +11,6 @@
         @Html.AntiForgeryToken()
         <h2 class="ml-3 mt-2">Join up to our Card File</h2>
         <div class="form-cotrol">
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group ">
                 @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col" })
                 <div class="col-md-11">
@@ -52,10 +51,8 @@
                 </div>
             </div>
 
-            @if (ViewBag.UserExist != null)
-            {
-                <span class="text-danger ml-3">@ViewBag.UserExist</span>
-            }
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
             <div class="form-group d-flex align-content-center mt-2">
                 <div class="ml-3">
                     <input type="submit" value="Register" class="btn btn-outline-success px-4" />

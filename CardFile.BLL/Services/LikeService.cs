@@ -6,9 +6,21 @@ using System.Threading.Tasks;
 
 namespace CardFile.BLL.Services
 {
+    /// <summary>
+    /// Метод реализации интерфейса <see cref="ILikeService"/>
+    /// <inheritdoc cref="ILikeService"/>
+    /// </summary>
     public class LikeService : ILikeService
     {
+        /// <summary>
+        /// Поле для работы с контекстом 
+        /// </summary>
         private readonly CardFileContext context;
+
+        /// <summary>
+        /// Конструктор в котором инициализируется поле контекта БД
+        /// </summary>
+        /// <param name="context">Контекст БД который передаётся в конструктор с помощью IoC-контейнера</param>
         public LikeService(CardFileContext context)
         {
             this.context = context;

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace CardFile.BLL.DTO
 {
+    /// <summary>
+    /// DTO для данных аутентификации пользователя
+    /// </summary>
     public class UserAuthInfoDTO
     {
         [StringLength(40, MinimumLength = 3, ErrorMessage = "User name size must be between 3 and 40 characters")]

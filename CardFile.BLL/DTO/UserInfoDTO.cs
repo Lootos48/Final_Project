@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace CardFile.BLL.DTO
 {
-    public class UserInfo
+    /// <summary>
+    /// DTO для получения и передачи Никнейма пользователя и его ролей
+    /// </summary>
+    public class UserInfoDTO
     {
         public string Username { get; set; }
         public string[] Roles { get; set; }

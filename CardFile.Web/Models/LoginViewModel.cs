@@ -6,6 +6,9 @@ using System.Web;
 
 namespace CardFile.Web.Models
 {
+    /// <summary>
+    /// Модель для данных аутентификации пользователя
+    /// </summary>
     public class LoginViewModel
     {
         [Required]

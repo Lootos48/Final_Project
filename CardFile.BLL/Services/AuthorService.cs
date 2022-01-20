@@ -14,6 +14,7 @@ namespace CardFile.BLL.Services
     /// <summary>
     /// Класс для реализации вызова методов CRUD-операций репозитория Author
     /// </summary>
+    /// <inheritdoc cref="IAuthorsService"/>
     public class AuthorService : IAuthorsService
     {
         /// <summary>

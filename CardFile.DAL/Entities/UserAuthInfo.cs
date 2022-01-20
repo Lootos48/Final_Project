@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace CardFile.DAL.Entities
 {
+    /// <summary>
+    /// Сущность для передачи данных об аутентификации пользователя
+    /// </summary>
     public class UserAuthInfo
     {
         [Required]

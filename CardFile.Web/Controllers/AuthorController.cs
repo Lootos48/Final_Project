@@ -16,12 +16,18 @@ using System.Web.Mvc;
 
 namespace CardFile.Web.Controllers
 {
+    /// <summary>
+    /// Контроллер для реализации функций по взаимодействию с профилями пользователей
+    /// </summary>
     public class AuthorController : Controller
     {
         readonly IAuthorsService _authorService;
         readonly IIdentityService _identityService;
         readonly IMapper mapper;
 
+        /// <summary>
+        /// Поле для работы с OWIN-контекстом
+        /// </summary>
         private IAuthenticationManager _authManger
         {
             get
@@ -29,6 +35,10 @@ namespace CardFile.Web.Controllers
                 return HttpContext.GetOwinContext().Authentication;
             }
         }
+
+        /// <summary>
+        /// Свойство для получения никнейма текущего аутентифицированного пользователя
+        /// </summary>
         private string CurrentUserUsername
         {
             get
@@ -125,7 +135,10 @@ namespace CardFile.Web.Controllers
                 }
                 catch (ValidationException ex)
                 {
-                    ViewBag.UserExist = ex.Message;
+                    foreach (string errorMessage in GetErrorsArray(ex.Message))
+                    {
+                        ModelState.AddModelError("", errorMessage);
+                    }
                     return View("Login");
                 }
                 return RedirectToAction("Index", "Cards");
@@ -152,7 +165,6 @@ namespace CardFile.Web.Controllers
             }
             try
             {
-                /*bool isCreated = await _identityService.CreateUser(mapper.Map<UserAuthInfoDTO>(user));*/
                 bool isCreated = await _identityService.CreateUser(new UserAuthInfoDTO()
                 {
                     Username = registerInfo.Username,
@@ -172,7 +184,10 @@ namespace CardFile.Web.Controllers
             }
             catch (ValidationException ex)
             {
-                ViewBag.UserExist = ex.Message;
+                foreach (string errorMessage in GetErrorsArray(ex.Message))
+                {
+                    ModelState.AddModelError("", errorMessage);
+                }
                 return View("Registration");
             }
 
@@ -214,23 +229,16 @@ namespace CardFile.Web.Controllers
                 return new ViewResult { ViewName = "~/Views/Shared/PermissionError.cshtml" };
             }
 
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    await _authorService.UpdateAuthor(mapper.Map<AuthorDTO>(author));
-                }
-                else
-                {
-                    return View();
-                }
+                await _authorService.UpdateAuthor(mapper.Map<AuthorDTO>(author));
+            }
+            else
+            {
+                return View();
+            }
 
-                return RedirectToAction("Details", new { id = author.Id });
-            }
-            catch (Exception ex)
-            {
-                 return View();
-            }
+            return RedirectToAction("Details", new { id = author.Id });
         }
 
         [Authorize(Roles = "Admin, RegisteredUser")]
@@ -241,7 +249,7 @@ namespace CardFile.Web.Controllers
 
         // POST: Author/Delete/5
         [HttpPost]
-        [Authorize(Roles = "Admin, RegisteredUser")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id, AuthorViewModel author)
         {
@@ -257,10 +265,23 @@ namespace CardFile.Web.Controllers
             }
         }
 
+        /// <summary>
+        /// Метод определения являеться ли текущий пользователь - редактируемым автором
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [NonAction]
         private async Task<bool> IsCurrentUserAnAuthor(int id)
         {
             var author = await _authorService.GetAuthor(id);
             return CurrentUserUsername == author.Username;
+        }
+
+        [NonAction]
+        private string[] GetErrorsArray(string exceptionMessage)
+        {
+            string[] errors = exceptionMessage.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            return errors;
         }
     }
 }

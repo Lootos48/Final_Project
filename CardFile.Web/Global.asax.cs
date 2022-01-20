@@ -18,13 +18,13 @@ namespace CardFile.Web
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
+            Environment.SetEnvironmentVariable("BASEDIR", AppDomain.CurrentDomain.BaseDirectory);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
             NinjectModule serviceModule = new ServiceModule();
-            NinjectModule uowModule = new UoWModule();
-            var kernel = new StandardKernel(serviceModule, uowModule);
+            var kernel = new StandardKernel(serviceModule);
             kernel.Unbind<ModelValidatorProvider>();
             DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));
         }

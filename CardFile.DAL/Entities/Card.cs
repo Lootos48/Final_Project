@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace CardFile.DAL.Entities
 {
+    /// <summary>
+    /// Модель сущности карточки
+    /// </summary>
     public class Card
     {
         /// <summary>
@@ -46,8 +49,14 @@ namespace CardFile.DAL.Entities
         [DefaultValue(0)]
         public int LikeAmount { get; set; }
         
-
+        /// <summary>
+        /// Идентификатор автора карточки
+        /// </summary>
         public int? AuthorId { get; set; }
+
+        /// <summary>
+        /// Навигационное свойство автора карточки
+        /// </summary>
         public Author Author { get; set; }
     }
 }

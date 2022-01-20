@@ -12,11 +12,25 @@ using System.Threading.Tasks;
 
 namespace CardFile.DAL.Repositories
 {
+    /// <summary>
+    /// Класс реализующий интерфейс <see cref="IIdentityProvider"/> 
+    /// </summary>
+    /// <inheritdoc cref="IIdentityProvider"/>
     public class IdentityProvider : IIdentityProvider
     {
+        /// <summary>
+        /// Поле для работы с классом <see cref="UserManager{TUser}"/> который обеспечивает функционал пользователей
+        /// </summary>
         readonly UserManager<IdentityUser> _userManager;
+
+        /// <summary>
+        /// Поле для работы с классом <see cref="RoleManager{TRole}"/> который обеспечивает функционал ролей
+        /// </summary>
         readonly RoleManager<IdentityRole> _roleManager;
 
+        /// <summary>
+        /// Конструктор класса в котором инициализируются поля <see cref="_userManager"/> и <see cref="_roleManager"/>
+        /// </summary>
         public IdentityProvider()
         {
             var roleStore = new RoleStore<IdentityRole>();
@@ -25,10 +39,11 @@ namespace CardFile.DAL.Repositories
             var userStore = new UserStore<IdentityUser>();
             _userManager = new UserManager<IdentityUser>(userStore);
 
+            // настраиваем кастомную валидацию
             _userManager.PasswordValidator = new PasswordValidator
             {
                 RequiredLength = 3,
-                RequireUppercase = true
+                RequireUppercase = true,
             };
         }
 

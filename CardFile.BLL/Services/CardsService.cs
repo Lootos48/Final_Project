@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CardFile.BLL.DTO;
+using CardFile.BLL.Infrastructure;
 using CardFile.BLL.Interfaces;
 using CardFile.DAL.Entities;
 using CardFile.DAL.Interfaces;
@@ -13,6 +14,7 @@ namespace CardFile.BLL.Services
 {
     /// <summary>
     /// Класс для реализации вызова методов CRUD-операций репозитория Card
+    /// <inheritdoc cref="ICardsService"/>
     /// </summary>
     public class CardsService : ICardsService
     {
@@ -52,10 +54,15 @@ namespace CardFile.BLL.Services
             mapper = config.CreateMapper();
         }
 
-        #region [ CRUD-operations ]
+        #region [ CRUD-methods ]
 
         public async Task<CardDTO> CreateCard(CardDTO cardDto)
         {
+            if ((await Database.Cards.GetAllAsync()).Any(c => c.Title == cardDto.Title))
+            {
+                throw new ValidationException("Card with the same title is already exist", "Title");
+            }
+
             Card createdEntity = await Database.Cards.CreateAsync(mapper.Map<Card>(cardDto));
 
             return mapper.Map<CardDTO>(createdEntity);
@@ -63,7 +70,12 @@ namespace CardFile.BLL.Services
 
         public async Task<CardDTO> GetCard(int? id)
         {
-            var card = await Database.Cards.FindByIdAsync(id.Value);
+            Card card = await Database.Cards.FindByIdAsync(id.Value);
+
+            if (card == null)
+            {
+                throw new ObjectNotFoundException(typeof(Card), id.Value.ToString(), "Object wan`t found by ID");
+            }
 
             return mapper.Map<CardDTO>(card);
         }
@@ -75,6 +87,11 @@ namespace CardFile.BLL.Services
 
         public async Task<bool> UpdateCard(CardDTO cardDTO)
         {
+            if ((await Database.Cards.GetAllAsync()).Any(c => c.Id != cardDTO.Id && c.Title == cardDTO.Title))
+            {
+                throw new ValidationException("Card with the same title is already exist", "Title");
+            }
+
             Card card = mapper.Map<Card>(cardDTO);
             return await Database.Cards.UpdateAsync(card);
         }

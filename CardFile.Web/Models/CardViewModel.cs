@@ -6,6 +6,9 @@ using System.Web;
 
 namespace CardFile.Web.Models
 {
+    /// <summary>
+    /// Модель сущности карточки
+    /// </summary>
     public class CardViewModel
     {
 
@@ -14,6 +17,9 @@ namespace CardFile.Web.Models
         [Display(Name = "Card Title")]
         public string Title { get; set; }
 
+        /// <summary>
+        /// Дата создания карточки в коротком формате
+        /// </summary>
         public string DateOfCreateString
         {
             get

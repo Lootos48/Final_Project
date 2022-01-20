@@ -5,19 +5,28 @@ using System.Web.Mvc;
 
 namespace CardFile.Web.Helpers
 {
+    /// <summary>
+    /// Класс для реализации методов пагинации
+    /// </summary>
     public static class PagingHelpers
     {
+        /// <summary>
+        /// Метод для реализации пагинации
+        /// </summary>
+        /// <param name="html"></param>
+        /// <param name="pageInfo">Информация о требованиях к странице</param>
+        /// <param name="pageUrl">Ссылка страницы</param>
+        /// <returns>Строку элемента html</returns>
         public static MvcHtmlString PageLinks(this HtmlHelper html,
-        PageInfoModel pageInfo, Func<int, string> pageUrl)
+            PageInfoModel pageInfo, Func<int, string> pageUrl)
         {
             StringBuilder result = new StringBuilder();
-
-            if (pageInfo.TotalItems == 0)
-            {
-                return MvcHtmlString.Create(result.ToString());
-            }
             for (int i = pageInfo.PageNumber - 1; i <= pageInfo.PageNumber + 1; i++)
             {
+                if (pageInfo.TotalPages <=0)
+                {
+                    break;
+                }
                 if (pageInfo.PageNumber < 1)
                 {
                     i = 1;
@@ -33,13 +42,12 @@ namespace CardFile.Web.Helpers
                 {
                     i = 1;
                 }
-
-                //?page=2 & SearchBy=Title & SearchString=World & sortOrder=Popular
-
-                tag.MergeAttribute("href", pageUrl(i));
+                string indexRef = $"{pageUrl(i)}&" +
+                    $"FilterOptions={pageInfo.searchFilter.SearchBy}&" +
+                    $"Value={pageInfo.searchFilter.SearchString}&" +
+                    $"sortOrder={pageInfo.sortOptions}";
+                tag.MergeAttribute("href", indexRef);
                 tag.InnerHtml = i.ToString();
-                // если текущая страница, то выделяем ее,
-                // например, добавляя класс
                 if (i == pageInfo.PageNumber)
                 {
                     tag.AddCssClass("selected");
@@ -54,7 +62,7 @@ namespace CardFile.Web.Helpers
                 if (pageInfo.PageNumber + 1 > pageInfo.TotalPages)
                 {
                     tag = new TagBuilder("a");
-                    tag.MergeAttribute("href", pageUrl(i));
+                    tag.MergeAttribute("href", indexRef);
                     tag.InnerHtml = pageInfo.TotalPages.ToString();
                     tag.AddCssClass("selected");
                     tag.AddCssClass("btn-dark");

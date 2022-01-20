@@ -10,9 +10,19 @@ using System.Web.Mvc;
 
 namespace CardFile.Web.Controllers
 {
+    /// <summary>
+    /// Контроллер для функций администрирования
+    /// </summary>
     public class AdminController : Controller
     {
+        /// <summary>
+        /// Поле для взаимодействия с пользователями
+        /// </summary>
         private readonly IIdentityService identityService;
+
+        /// <summary>
+        /// Поле для взаимодействия с профилями пользователей
+        /// </summary>
         private readonly IAuthorsService authorsService;
         public AdminController(IIdentityService identityService, IAuthorsService authorsServ)
         {

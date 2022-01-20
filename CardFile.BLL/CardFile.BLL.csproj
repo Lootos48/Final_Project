@@ -66,8 +66,9 @@
     <Compile Include="DTO\AuthorDTO.cs" />
     <Compile Include="DTO\CardDTO.cs" />
     <Compile Include="DTO\UserAuthInfoDTO.cs" />
-    <Compile Include="DTO\UserInfo.cs" />
-    <Compile Include="Infrastructure\UoWModule.cs" />
+    <Compile Include="DTO\UserInfoDTO.cs" />
+    <Compile Include="Infrastructure\ObjectNotFoundException.cs" />
+    <Compile Include="Infrastructure\ServiceModule.cs" />
     <Compile Include="Infrastructure\ValidationException.cs" />
     <Compile Include="Interfaces\IAuthorsService.cs" />
     <Compile Include="Interfaces\ICardsService.cs" />

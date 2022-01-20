@@ -8,8 +8,16 @@ using System.Web;
 
 namespace CardFile.Web.Util
 {
+    /// <summary>
+    /// Статический класс для фильтрации и сортировки страницы
+    /// </summary>
     public static class PageFiltration
     {
+        /// <summary>
+        /// Метод для получения преобразованных сущностей карточек
+        /// </summary>
+        /// <param name="cards">Коллекция карточек которую нужно преобразовать</param>
+        /// <returns>Преобразованная колекция карточек</returns>
         public static IEnumerable<CardDTO> Transform(IEnumerable<CardDTO> cards)
         {
             foreach (CardDTO card in cards)
@@ -22,6 +30,12 @@ namespace CardFile.Web.Util
             return cards;
         }
 
+        /// <summary>
+        /// Метод для получения преобразованной и отсортированной колекции карточек
+        /// </summary>
+        /// <param name="cards">Карточки которые нужно преобразовать</param>
+        /// <param name="sortOrder">Порядок сортировки</param>
+        /// <returns>Преобразованный и отсортированный массив</returns>
         public static IEnumerable<CardDTO> Transform(IEnumerable<CardDTO> cards, SortOptions sortOrder)
         {
             switch (sortOrder)
@@ -47,6 +61,13 @@ namespace CardFile.Web.Util
             return Transform(cards);
         }
 
+        /// <summary>
+        /// Метод для преобразования, сортировки и фильтрации колекции карточек
+        /// </summary>
+        /// <param name="cards">Коллекция карточек с которой нужно произвести действия</param>
+        /// <param name="sortOrder">Порядок сортировки</param>
+        /// <param name="searchFilter">Параметры фильтрации</param>
+        /// <returns>Преобразованная, отсортированная и отфильтрованная коллекция карточек</returns>
         public static IEnumerable<CardDTO> Transform(IEnumerable<CardDTO> cards, SortOptions sortOrder, PageFilter searchFilter)
         {
             if (searchFilter != null && searchFilter.SearchString != null)

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace CardFile.BLL.DTO
 {
+    /// <summary>
+    /// DTO сущности автора
+    /// </summary>
     public class AuthorDTO
     {
         public int Id { get; set; }

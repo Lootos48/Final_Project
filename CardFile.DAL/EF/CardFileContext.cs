@@ -17,7 +17,6 @@ namespace CardFile.DAL.EF
     /// </summary>
     public class CardFileContext : DbContext
     {
-        /*public CardFileContext(string connectionString) : base(connectionString) { }*/
 
         /// <summary>
         /// Поле коллекции сущностей  Author
@@ -29,6 +28,9 @@ namespace CardFile.DAL.EF
         /// </summary>
         public DbSet<Card> Cards { get; set; }
 
+        /// <summary>
+        /// Поле для хранения информации о пролайканных автором карточках (связь М-к-М)
+        /// </summary>
         public DbSet<AuthorsLikedCards> AuthorsLikedCards { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -36,41 +38,16 @@ namespace CardFile.DAL.EF
             // убираем добавление множественных окончаний у назвиний генерируемых таблиц
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
 
-            // создаём связь 1-к-многим у таблиц Author и Cards 
+            // создаём связь 1-к-многим у таблиц Author и Cards  и отключаем каскадное удаление
             modelBuilder.Entity<Author>()
                 .HasMany(c => c.Cards)
                 .WithRequired(a => a.Author)
                 .HasForeignKey(k => k.AuthorId)
                 .WillCascadeOnDelete(false);
 
+            // явно задали композитный ключ
             modelBuilder.Entity<AuthorsLikedCards>()
                 .HasKey(x => new { x.AuthorId, x.CardId });
         }
-
-        /// <summary>
-        /// Метод для вызова процедуры добавления значения ID Author в колонку AuthorId строки таблицы Card
-        /// </summary>
-        /// <param name="cardId">ID карточки с которую добавляем значение ID автора</param>
-        /// <param name="authorId">ID автора что создал карточку</param>
-        /// <returns></returns>
-        public virtual Task<int> AddAuthorToCard(int cardId, int authorId)
-        {
-            return this.Database.ExecuteSqlCommandAsync("exec AddAuthorToCard @cardId, @authorId",
-                new SqlParameter("@cardId", cardId),
-                new SqlParameter("@authorId", authorId));
-        }
     }
-
-
-    /// <summary>
-    /// Класс для обеспечения работы Code-first миграций, который позволяет миграциям создавать объект класса контекста БД
-    /// </summary>
-    /*public class CardFileContextFactory : IDbContextFactory<CardFileContext>
-    {
-        public CardFileContext Create()
-        {
-            string connectionString = @"Server=(localdb)\mssqllocaldb;Database=CardFileDB;Trusted_Connection=True;";
-            return new CardFileContext(connectionString);
-        }
-    }*/
 }

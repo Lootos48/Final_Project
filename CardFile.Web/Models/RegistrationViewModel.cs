@@ -6,6 +6,9 @@ using System.Web;
 
 namespace CardFile.Web.Models
 {
+    /// <summary>
+    /// Модель для получения данных с формы регистрации
+    /// </summary>
     public class RegistrationViewModel
     {
         [Required]

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace CardFile.DAL.Entities
 {
+    /// <summary>
+    /// Модель сущности автора
+    /// </summary>
     public class Author
     {
         /// <summary>
@@ -37,6 +40,10 @@ namespace CardFile.DAL.Entities
         [StringLength(60, MinimumLength = 3, ErrorMessage = "Second name size must be between 3 and 60 characters")]
         public string SecondName { get; set; }
 
+
+        /// <summary>
+        /// Навигационное свойство для связи 1-к-М
+        /// </summary>
         public ICollection<Card> Cards { get; set; }
 
         /// <summary>

@@ -5,6 +5,9 @@ using System.Web;
 
 namespace CardFile.Web.Enums
 {
+    /// <summary>
+    /// Перечисление разных порядков сортировки
+    /// </summary>
     public enum SortOptions
     {
         Title = 1,
@@ -14,6 +17,9 @@ namespace CardFile.Web.Enums
         Unpopular = 5
     }
 
+    /// <summary>
+    /// Перечисление разных способов фильтрации
+    /// </summary>
     public enum FilterOptions
     {
         Title = 1,

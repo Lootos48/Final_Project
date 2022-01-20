@@ -6,6 +6,9 @@ using System.Web;
 
 namespace CardFile.Web.Models
 {
+    /// <summary>
+    /// Модель сущности профиля пользователя
+    /// </summary>
     public class AuthorViewModel
     {
         public int Id { get; set; }
