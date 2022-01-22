@@ -30,8 +30,6 @@ namespace CardFile.DAL.Repositories
         public async Task<Author> CreateAsync(Author item)
         {
             _context.Authors.Add(item);
-            /*await _context.SaveChangesAsync();*/
-
             return item;
         }
 

@@ -24,7 +24,7 @@ namespace CardFile.BLL.Interfaces
         /// </summary>
         /// <param name="id">Идентификатор искомой карточки</param>
         /// <returns>Объект <see cref="CardDTO"/> с искомым идентификатором</returns>
-        Task<CardDTO> GetCard(int? id);
+        Task<CardDTO> GetCard(int id);
 
         /// <summary>
         /// Метод для получения всех существующих карточек

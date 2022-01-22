@@ -65,9 +65,9 @@ namespace CardFile.BLL.Services
             return mapper.Map<AuthorDTO>(createdEntity);
         }
 
-        public async Task<AuthorDTO> GetAuthor(int? id)
+        public async Task<AuthorDTO> GetAuthor(int id)
         {
-            var author = await Database.Authors.FindByIdAsync(id.Value);
+            var author = await Database.Authors.FindByIdAsync(id);
 
             if (author == null)
             {

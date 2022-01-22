@@ -24,7 +24,7 @@ namespace CardFile.BLL.Interfaces
         /// </summary>
         /// <param name="id">Идентификатор искомого автора</param>
         /// <returns>Объект <see cref="AuthorDTO"/> с искомым идентификатором</returns>
-        Task<AuthorDTO> GetAuthor(int? id);
+        Task<AuthorDTO> GetAuthor(int id);
 
         /// <summary>
         /// Метод для получения экземпляра автора

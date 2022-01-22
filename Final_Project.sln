@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardFile.DAL", "CardFile.DA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardFile.BLL", "CardFile.BLL\CardFile.BLL.csproj", "{2C18A579-9680-45E0-AAAD-B479DBE13012}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardFile.BLL.Tests", "CardFile.BLL.Tests\CardFile.BLL.Tests.csproj", "{08819BB0-AAB2-42EA-85DF-9E9A70D36AFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2C18A579-9680-45E0-AAAD-B479DBE13012}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C18A579-9680-45E0-AAAD-B479DBE13012}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C18A579-9680-45E0-AAAD-B479DBE13012}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08819BB0-AAB2-42EA-85DF-9E9A70D36AFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08819BB0-AAB2-42EA-85DF-9E9A70D36AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08819BB0-AAB2-42EA-85DF-9E9A70D36AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08819BB0-AAB2-42EA-85DF-9E9A70D36AFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

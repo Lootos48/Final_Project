@@ -69,9 +69,9 @@ namespace CardFile.BLL.Services
             return mapper.Map<CardDTO>(createdEntity);
         }
 
-        public async Task<CardDTO> GetCard(int? id)
+        public async Task<CardDTO> GetCard(int id)
         {
-            Card card = await Database.Cards.FindByIdAsync(id.Value);
+            Card card = await Database.Cards.FindByIdAsync(id);
 
             if (card == null)
             {
