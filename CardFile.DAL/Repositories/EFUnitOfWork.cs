@@ -24,6 +24,8 @@ namespace CardFile.DAL.Repositories
         /// </summary>
         private CardRepository cardRepository;
 
+        private LikeRepository likeRepository;
+
         /// <summary>
         /// Конструктор который получает контекст БД
         /// </summary>
@@ -58,6 +60,19 @@ namespace CardFile.DAL.Repositories
                 return cardRepository;
             }
         }
+
+        public ILikeRepository Likes
+        {
+            get
+            {
+                if (likeRepository == null)
+                {
+                    likeRepository = new LikeRepository(db);
+                }
+                return likeRepository;
+            }
+        }
+
         public async Task SaveAsync()
         {
             await db.SaveChangesAsync();

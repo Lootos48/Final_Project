@@ -21,7 +21,7 @@ namespace CardFile.BLL.Infrastructure
         {
             var context = new CardFileContext();
             Bind<IUnitOfWork>().To<EFUnitOfWork>().WithConstructorArgument("cardFileContext", context);
-            Bind<ILikeService>().To<LikeService>().WithConstructorArgument("context", context);
+            Bind<ILikeService>().To<LikeService>();
             Bind<IIdentityProvider>().To<IdentityProvider>();
             Bind<IAuthorsService>().To<AuthorService>();
             Bind<ICardsService>().To<CardsService>();

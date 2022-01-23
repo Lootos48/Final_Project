@@ -65,6 +65,7 @@
     <Compile Include="Entities\Card.cs" />
     <Compile Include="Entities\UserAuthInfo.cs" />
     <Compile Include="Interfaces\IIdentityProvider.cs" />
+    <Compile Include="Interfaces\ILikeRepository.cs" />
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Interfaces\IUnitOfWork.cs" />
     <Compile Include="Migrations\202201081512296_InitialCreate.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Repositories\CardRepository.cs" />
     <Compile Include="Repositories\EFUnitOfWork.cs" />
     <Compile Include="Repositories\IdentityProvider.cs" />
+    <Compile Include="Repositories\LikeRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

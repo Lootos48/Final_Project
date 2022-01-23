@@ -31,7 +31,7 @@ namespace CardFile.Web.Filters
         public void OnActionExecuted(ActionExecutedContext filterContext)
         {
             var logInfo = GetInfo(filterContext.RouteData.Values);
-            Log.Logger.Information("Succesfully Executed: " + logInfo);
+            Log.Logger.Information("Executing Ended: " + logInfo);
         }
 
         public void OnActionExecuting(ActionExecutingContext filterContext)

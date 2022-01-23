@@ -89,6 +89,11 @@ namespace CardFile.Web.Controllers
         public async Task<ActionResult> Like(int id)
         {
             var author = await _authorsService.GetAuthor(a => a.Username == CurrentUserUsername);
+            if (author == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
+            }
+
             var result = await _likeService.LikeCard(id, author.Id);
             if (result)
             {
@@ -113,7 +118,7 @@ namespace CardFile.Web.Controllers
                     var author = await _authorsService.GetAuthor(a => a.Username == CurrentUserUsername);
                     ViewBag.IsAuthorAlreadyLikeCard = _likeService.IsAuthorAlreadyLikeCard(id.Value, author.Id);
                 }
-                return View(mapper.Map<CardViewModel>(cardDTO));
+                return View("Details", mapper.Map<CardViewModel>(cardDTO));
             }
             catch (ObjectNotFoundException)
             {
@@ -141,11 +146,12 @@ namespace CardFile.Web.Controllers
                     var author = await _authorsService.GetAuthor(a => a.Username == CurrentUserUsername);
                     card.AuthorId = author.Id;
                     card.DateOfCreate = DateTime.Now;
-                    card = mapper.Map<CardViewModel>(await _cardsService.CreateCard(mapper.Map<CardDTO>(card)));
+                    CardDTO createdCard = await _cardsService.CreateCard(mapper.Map<CardDTO>(card));
+                    card = mapper.Map<CardViewModel>(createdCard);
                 }
                 else
                 {
-                    return View();
+                    return View("Create");
                 }
             }
             catch (ValidationException ex)

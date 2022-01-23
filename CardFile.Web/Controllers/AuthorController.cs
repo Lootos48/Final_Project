@@ -70,21 +70,6 @@ namespace CardFile.Web.Controllers
             mapper = config.CreateMapper();
         }
 
-        // GET: Author
-        public async Task<ActionResult> Index(int page = 1)
-        {
-            IEnumerable<AuthorDTO> dTOs = await _authorService.GetAll();
-
-            var authors = mapper.Map<List<AuthorViewModel>>(dTOs);
-
-            int pageSize = 5;
-            IEnumerable<AuthorViewModel> authorsPerPage = authors.Skip((page - 1) * pageSize).Take(pageSize);
-            PageInfoModel pageInfo = new PageInfoModel { PageNumber = page, PageSize = pageSize, TotalItems = authors.Count };
-            IndexViewModel<AuthorViewModel> ivm = new IndexViewModel<AuthorViewModel> { PageInfo = pageInfo, PageObjects = authorsPerPage };
-
-            return View(ivm);
-        }
-
         // GET: Author/Details/5
         [HttpGet]
         [Authorize(Roles = "Admin, RegisteredUser")]
@@ -96,13 +81,9 @@ namespace CardFile.Web.Controllers
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
-                if (User.Identity.IsAuthenticated)
-                {
-                    AuthorDTO authorDTO = await _authorService.GetAuthor(id.Value);
 
-                    return View(mapper.Map<AuthorViewModel>(authorDTO));
-                }
-                return View("Index");
+                AuthorDTO authorDTO = await _authorService.GetAuthor(id.Value);
+                return View("Details", mapper.Map<AuthorViewModel>(authorDTO));
             }
             catch (ObjectNotFoundException)
             {
@@ -111,6 +92,7 @@ namespace CardFile.Web.Controllers
             
         }
 
+        [Authorize(Roles = "Admin, RegisteredUser")]
         public async Task<ActionResult> AuthorProfile(string username)
         {
             if (username == "" || username == null)
@@ -131,7 +113,7 @@ namespace CardFile.Web.Controllers
         {
             if (!User.Identity.IsAuthenticated)
             {
-                return View();
+                return View("Login");
             }
 
             return RedirectToAction("Index", "Cards");
@@ -145,8 +127,7 @@ namespace CardFile.Web.Controllers
                 try
                 {
                     var claimsIdentity = await _identityService.GetUserClaims(mapper.Map<UserAuthInfoDTO>(user));
-                    var authenticationManager = HttpContext.GetOwinContext().Authentication;
-                    authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = false }, claimsIdentity);
+                    _authManager.SignIn(new AuthenticationProperties() { IsPersistent = false }, claimsIdentity);
                 }
                 catch (ValidationException ex)
                 {
@@ -176,7 +157,7 @@ namespace CardFile.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View();
+                return View("Registration");
             }
             try
             {
@@ -213,8 +194,6 @@ namespace CardFile.Web.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                /*var authenticationManager = HttpContext.GetOwinContext().Authentication;
-                authenticationManager.SignOut();*/
                 _authManager.SignOut();
             }
 
@@ -274,27 +253,6 @@ namespace CardFile.Web.Controllers
             {
                 ModelState.AddModelError(ex.Property, ex);
                 return View();
-            }
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(int? id)
-        {
-            try
-            {
-                if (id == null)
-                {
-                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-                }
-                await _authorService.DeleteAuthor(id.Value);
-
-                return RedirectToAction("Index");
-            }
-            catch(ObjectNotFoundException)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.NotFound);
             }
         }
 

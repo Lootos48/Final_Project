@@ -55,7 +55,6 @@ namespace CardFile.DAL.Repositories
             if (result)
             {
                 _context.Entry(item).State = EntityState.Deleted;
-                /*await _context.SaveChangesAsync();*/
             }
 
             return result;
@@ -67,7 +66,6 @@ namespace CardFile.DAL.Repositories
             if (entity != null)
             {
                 _context.Entry(entity).CurrentValues.SetValues(item);
-                /*await _context.SaveChangesAsync();*/
                 return true;
             }
             return false;

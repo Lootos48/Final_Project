@@ -9,7 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardFile.DAL", "CardFile.DA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardFile.BLL", "CardFile.BLL\CardFile.BLL.csproj", "{2C18A579-9680-45E0-AAAD-B479DBE13012}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardFile.BLL.Tests", "CardFile.BLL.Tests\CardFile.BLL.Tests.csproj", "{08819BB0-AAB2-42EA-85DF-9E9A70D36AFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardFile.BLL.Tests", "CardFile.BLL.Tests\CardFile.BLL.Tests.csproj", "{08819BB0-AAB2-42EA-85DF-9E9A70D36AFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardFile.Web.Tests", "CardFile.Web.Tests\CardFile.Web.Tests.csproj", "{AE74C54C-F8C1-4D9C-B819-6A0ED35AD569}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{08819BB0-AAB2-42EA-85DF-9E9A70D36AFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08819BB0-AAB2-42EA-85DF-9E9A70D36AFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08819BB0-AAB2-42EA-85DF-9E9A70D36AFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE74C54C-F8C1-4D9C-B819-6A0ED35AD569}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE74C54C-F8C1-4D9C-B819-6A0ED35AD569}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE74C54C-F8C1-4D9C-B819-6A0ED35AD569}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE74C54C-F8C1-4D9C-B819-6A0ED35AD569}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

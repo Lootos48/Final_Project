@@ -24,6 +24,15 @@ namespace CardFile.DAL.Interfaces
         /// </summary>
         IRepository<Card> Cards { get; }
 
+        /// <summary>
+        /// Поле доступа к репозиторию через который производится работа с таблицей лайков
+        /// </summary>
+        ILikeRepository Likes { get; }
+
+        /// <summary>
+        /// Метод для ассинхронного сохранения
+        /// </summary>
+        /// <returns></returns>
         Task SaveAsync();
     }
 }
